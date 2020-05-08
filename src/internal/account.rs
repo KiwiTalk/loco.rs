@@ -38,6 +38,14 @@ pub fn get_request_passcode_url(os: &Os) -> Url {
     url
 }
 
+pub fn get_register_device_url(os: &Os) -> Url {
+    let mut url: Url = account::url();
+    url.set_path(
+        get_internal_path(os, paths::REGISTER_DEVICE).as_ref()
+    );
+    url
+}
+
 pub mod paths {
     #![allow(dead_code)]
     pub const LOGIN: &str = "login.json";
