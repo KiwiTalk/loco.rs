@@ -2,7 +2,7 @@ use std::ops::Deref;
 use serde_qs;
 use std::future::Future;
 use reqwest::{Response, Error};
-use crate::internal::{AUTH_USER_AGENT, account, LoginData};
+use crate::internal::{os::Os, AUTH_USER_AGENT, account, LoginData};
 
 pub struct Client {
     client: reqwest::Client
@@ -23,8 +23,8 @@ impl Client {
         };
     }
 
-    pub fn request_login(&self, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
-        return self.post(account::get_login_url())
+    pub fn request_login(&self, os: Os, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
+        return self.post(account::get_login_url(os))
             .headers(account::get_auth_header(&login_data.to_xvc_key(AUTH_USER_AGENT)))
             .body(serde_qs::to_string(
                 login_data

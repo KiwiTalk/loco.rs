@@ -1,4 +1,4 @@
-use crate::internal::{Client, LoginData};
+use crate::internal::{os::Os, Client, LoginData};
 use data_encoding::BASE64;
 
 #[tokio::test]
@@ -13,7 +13,7 @@ async fn login() {
         false,
         false
     );
-    let result = client.request_login(&login_data).await;
+    let result = client.request_login(Os::Win32, &login_data).await;
     let text = result.ok().unwrap();
     println!("{}", text.text().await.ok().unwrap());
 }
