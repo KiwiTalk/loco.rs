@@ -14,11 +14,11 @@ pub enum FeedType {
     // 3
     SecretLeave,
     // 4
-    OpenlinkJoin,
+    OpenLinkJoin,
     // 5
-    OpenlinkDeleteLink,
+    OpenLinkDeleteLink,
     // 6
-    OpenlinkKicked,
+    OpenLinkKicked,
     // 7
     ChatKicked,
     // 8
@@ -26,13 +26,13 @@ pub enum FeedType {
     // 10
     RichContent,
     // 11
-    OpenlinkStaffOn,
+    OpenLinkStaffOn,
     // 12
-    OpenlinkStaffOff,
+    OpenLinkStaffOff,
     // 13
-    OpenlinkRewriteFeed,
+    OpenLinkRewriteFeed,
     // 14
     DeleteToAll,
     // 14
-    OpenlinkHandOverHost,
+    OpenLinkHandOverHost,
 }
