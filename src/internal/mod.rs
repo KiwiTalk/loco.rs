@@ -1,15 +1,23 @@
 pub mod key;
 pub mod emoticon;
+pub mod account;
 
 mod language;
 mod attachment;
+mod xvc_key;
+mod client;
+mod login_data;
 
 pub use attachment::AttachmentType;
 pub use language::Language;
+pub use xvc_key::XVCKey;
+pub use login_data::LoginData;
 
 /** macros **/
+#[macro_export]
 macro_rules! define {
 	($i:ident, $e:expr) => {
+	    #[macro_export]
 		macro_rules! $i {()=>{$e}}
 	}
 }
@@ -19,6 +27,7 @@ macro_rules! define_host {
     ($name:ident, $host:literal) => {
         pub mod $name {
             use reqwest::Url;
+            pub const HOST: &str = $host;
             pub const URL: &str = concat!("https://", $host);
             pub fn url() -> Url {
                 Url::parse(URL).ok().unwrap()
@@ -35,12 +44,11 @@ define!{internal_app_subversion, 2441}
 define!{os_version, "10.0"}
 define!{language, "ko"}
 //define!{internal_protocol, "https"}
-define!{account_path, "account"}
 //hosts
-define_host!(account, "ac-sb-talk.kakao.com");
 define_host!(internal, "sb-talk.kakao.com");
 
 /** constants **/
+pub const AGENT: &str = agent!();
 // Maps to InternalAppVersion
 pub const APP_VERSION: &str = concat!(version!(), ".", internal_app_subversion!());
 // Maps to InternalAppSubVersion
@@ -52,14 +60,3 @@ pub const AUTH_HEADER_AGENT: &str = concat!(version!(), "/", os_version!(), "/",
 // LOCO entry
 pub const LOCO_ENTRY: &str = "booking-loco.kakao.com";
 pub const LOCO_ENTRY_PORT: u16 = 443;
-
-
-pub fn get_account_internal_path(path: &str) -> String {
-    format!(concat!(agent!(), "/", account_path!(), "/{}"), path)
-}
-
-// TODO: Account, LogonAccount, getInternalURL, getAccountInternalUrl, getEmoticonHeader
-
-
-
-// TODO
