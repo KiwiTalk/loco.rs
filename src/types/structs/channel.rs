@@ -13,7 +13,7 @@ pub struct ChannelMeta {
     updated_at: i32,
 }
 
-enum ChannelMetaType {
+pub enum ChannelMetaType {
     // 1
     Notice,
     // 2
@@ -41,7 +41,7 @@ pub struct ChannelBoardMeta {
 
 }
 
-enum ChannelBoardType {
+pub enum ChannelBoardType {
     // 0
     None,
     // 1
