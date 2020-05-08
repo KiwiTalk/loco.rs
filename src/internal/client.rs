@@ -44,10 +44,10 @@ impl Client {
             .send()
             .await
     }
-  
+
     pub async fn register_device(&self, device_register_data: &DeviceRegisterData) -> Result<Response, Error> {
-        self.post(account::get_register_device_url(self.agent.borrow()))
-            .headers(account::get_auth_header(self.agent.borrow(), &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
+        self.post(account::get_register_device_url(&self.agent))
+            .headers(account::get_auth_header(&self.agent, &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
             .form(device_register_data)
             .send()
             .await
