@@ -19,7 +19,7 @@ impl LoginData {
             password,
             device_uuid,
             device_name,
-            os_version
+            os_version,
             forced,
             permanent,
         };
