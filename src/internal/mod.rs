@@ -7,6 +7,7 @@ mod attachment;
 mod xvc_key;
 mod client;
 mod login_data;
+pub mod agent;
 
 pub use attachment::AttachmentType;
 pub use language::Language;
@@ -40,7 +41,6 @@ macro_rules! define_host {
 
 
 /*** defines ***/
-define!{agent, "win32"}
 define!{version, "3.1.1"}
 define!{internal_app_subversion, 2441}
 define!{os_version, "10.0"}
@@ -50,7 +50,6 @@ define!{language, "ko"}
 define_host!(internal, "sb-talk.kakao.com");
 
 /*** constants ***/
-pub const AGENT: &str = agent!();
 // Maps to InternalAppVersion
 pub const APP_VERSION: &str = concat!(version!(), ".", internal_app_subversion!());
 // Maps to InternalAppSubVersion

@@ -1,14 +1,14 @@
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{header, Url};
 use crate::{define_host, define};
-use crate::internal::{XVCKey, AUTH_HEADER_AGENT, AUTH_USER_AGENT, LANGUAGE, AGENT};
+use crate::internal::{agent::Os, XVCKey, AUTH_HEADER_AGENT, AUTH_USER_AGENT, LANGUAGE};
 
 define!{account_path, "account"}
 
 define_host!(account, "ac-sb-talk.kakao.com");
 
-pub fn get_internal_path(path: &str) -> String {
-    format!(concat!("{}/", account_path!(), "/{}"), AGENT, path)
+pub fn get_internal_path(agent: &Os, path: &str) -> String {
+    format!(concat!("{}/", account_path!(), "/{}"), agent.as_str(), path)
 }
 
 pub fn get_auth_header(xvc_key: &XVCKey) -> HeaderMap<HeaderValue> {
@@ -22,10 +22,10 @@ pub fn get_auth_header(xvc_key: &XVCKey) -> HeaderMap<HeaderValue> {
     return header_map;
 }
 
-pub fn get_login_url() -> Url {
+pub fn get_login_url(os: &Os) -> Url {
     let mut url: Url = account::url();
     url.set_path(
-        get_internal_path(paths::LOGIN).as_ref()
+        get_internal_path(os, paths::LOGIN).as_ref()
     );
     url
 }

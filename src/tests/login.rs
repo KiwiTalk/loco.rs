@@ -1,9 +1,9 @@
-use crate::internal::{Client, LoginData};
+use crate::internal::{agent::Os, Client, LoginData};
 use data_encoding::BASE64;
 
 #[tokio::test]
 async fn login() {
-    let client = Client::new();
+    let client = Client::new(Os::Win32);
     let login_data = LoginData::new(
         "test@gmail.com".to_string(),
         "password".to_string(),
