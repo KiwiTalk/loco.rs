@@ -4,7 +4,6 @@ use std::future::Future;
 use reqwest::{Response, Error};
 use crate::internal::{agent::Os, AUTH_USER_AGENT, account, LoginData, DeviceRegisterData};
 use sha2::Digest;
-use std::borrow::Borrow;
 
 pub struct Client {
     client: reqwest::Client,
@@ -28,8 +27,8 @@ impl Client {
     }
 
     pub fn request_login(&self, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
-        return self.post(account::get_login_url(self.agent.borrow()))
-            .headers(account::get_auth_header(self.agent.borrow(), &login_data.to_xvc_key(AUTH_USER_AGENT)))
+        return self.post(account::get_login_url(&self.agent))
+            .headers(account::get_auth_header(&self.agent, &login_data.to_xvc_key(AUTH_USER_AGENT)))
             .body(serde_qs::to_string(
                 login_data
             ).ok().unwrap())
@@ -37,8 +36,8 @@ impl Client {
     }
 
     pub fn request_passcode(&self, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
-        return self.post(account::get_request_passcode_url(self.agent.borrow()))
-            .headers(account::get_auth_header(self.agent.borrow(), &login_data.to_xvc_key(AUTH_USER_AGENT)))
+        return self.post(account::get_request_passcode_url(&self.agent))
+            .headers(account::get_auth_header(&self.agent, &login_data.to_xvc_key(AUTH_USER_AGENT)))
             .body(serde_qs::to_string(
                 login_data
             ).ok().unwrap())
@@ -46,8 +45,8 @@ impl Client {
     }
 
     pub fn register_device(&self, device_register_data: &DeviceRegisterData) -> impl Future<Output = Result<Response, Error>> {
-        return self.post(account::get_register_device_url(self.agent.borrow()))
-            .headers(account::get_auth_header(self.agent.borrow(), &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
+        return self.post(account::get_register_device_url(&self.agent))
+            .headers(account::get_auth_header(&self.agent, &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
             .body(serde_qs::to_string(
                 device_register_data
             ).ok().unwrap())

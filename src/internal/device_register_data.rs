@@ -1,31 +1,27 @@
-use crate::internal::XVCKey;
+use crate::internal::{XVCKey, LoginData};
 use serde::{Serialize, Deserialize};
+use std::ops::Deref;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct DeviceRegisterData {
-    email: String,
-    password: String,
-    device_uuid: String,
-    device_name: String,
-    os_version: String,
-    permanent: bool,
-    passcode: u16,
+    #[serde(flatten)]
+    login_data: LoginData,
+    pub passcode: u16,
+}
+
+impl Deref for DeviceRegisterData {
+    type Target = LoginData;
+
+    fn deref(&self) -> &Self::Target {
+        return &self.login_data;
+    }
 }
 
 impl DeviceRegisterData {
-    pub fn new(email: String, password: String, device_uuid: String, device_name: String, os_version: String, permanent: bool, passcode: u16) -> DeviceRegisterData {
+    pub fn new(login_data: LoginData, passcode: u16) -> DeviceRegisterData {
         return DeviceRegisterData {
-            email,
-            password,
-            device_uuid,
-            device_name,
-            os_version,
-            permanent,
-            passcode,
+            login_data,
+            passcode
         };
-    }
-
-    pub fn to_xvc_key(&self, auth_user_agent: &str) -> XVCKey {
-        XVCKey::new(auth_user_agent, self.email.as_ref(), self.device_uuid.as_ref())
     }
 }
