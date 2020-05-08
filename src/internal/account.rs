@@ -30,7 +30,16 @@ pub fn get_login_url() -> Url {
     url
 }
 
+pub fn get_request_passcode_url() -> Url {
+    let mut url: Url = account::url();
+    url.set_path(
+        get_internal_path(paths::REQUEST_PASSCODE).as_ref()
+    );
+    url
+}
+
 pub mod paths {
+    #![allow(dead_code)]
     pub const LOGIN: &str = "login.json";
     pub const REGISTER_DEVICE: &str = "register_device.json";
     pub const REQUEST_PASSCODE: &str = "request_passcode.json";

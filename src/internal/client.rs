@@ -31,4 +31,13 @@ impl Client {
             ).ok().unwrap())
             .send();
     }
+
+    pub fn request_passcode(&self, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
+        return self.post(account::get_request_passcode_url())
+            .headers(account::get_auth_header(&login_data.to_xvc_key(AUTH_USER_AGENT)))
+            .body(serde_qs::to_string(
+                login_data
+            ).ok().unwrap())
+            .send();
+    }
 }
