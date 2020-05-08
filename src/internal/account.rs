@@ -25,7 +25,7 @@ pub fn get_auth_header(agent: &Os, xvc_key: &XVCKey) -> HeaderMap<HeaderValue> {
 pub fn get_login_url(os: &Os) -> Url {
     let mut url: Url = account::url();
     url.set_path(
-        get_internal_path(os, paths::LOGIN).as_ref()
+        &get_internal_path(os, paths::LOGIN)
     );
     url
 }
@@ -33,7 +33,7 @@ pub fn get_login_url(os: &Os) -> Url {
 pub fn get_request_passcode_url(os: &Os) -> Url {
     let mut url: Url = account::url();
     url.set_path(
-        get_internal_path(os, paths::REQUEST_PASSCODE).as_ref()
+        &get_internal_path(os, paths::REQUEST_PASSCODE)
     );
     url
 }
@@ -41,7 +41,7 @@ pub fn get_request_passcode_url(os: &Os) -> Url {
 pub fn get_register_device_url(os: &Os) -> Url {
     let mut url: Url = account::url();
     url.set_path(
-        get_internal_path(os, paths::REGISTER_DEVICE).as_ref()
+        &get_internal_path(os, paths::REGISTER_DEVICE)
     );
     url
 }
