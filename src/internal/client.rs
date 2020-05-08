@@ -2,7 +2,7 @@ use std::ops::Deref;
 use serde_qs;
 use std::future::Future;
 use reqwest::{Response, Error};
-use crate::internal::{agent::Os, AUTH_USER_AGENT, account, LoginData};
+use crate::internal::{agent::Os, AUTH_USER_AGENT, account, LoginData, DeviceRegisterData};
 use sha2::Digest;
 use std::borrow::Borrow;
 
@@ -41,6 +41,15 @@ impl Client {
             .headers(account::get_auth_header(self.agent.borrow(), &login_data.to_xvc_key(AUTH_USER_AGENT)))
             .body(serde_qs::to_string(
                 login_data
+            ).ok().unwrap())
+            .send();
+    }
+
+    pub fn register_device(&self, device_register_data: &DeviceRegisterData) -> impl Future<Output = Result<Response, Error>> {
+        return self.post(account::get_register_device_url(self.agent.borrow()))
+            .headers(account::get_auth_header(self.agent.borrow(), &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
+            .body(serde_qs::to_string(
+                device_register_data
             ).ok().unwrap())
             .send();
     }
