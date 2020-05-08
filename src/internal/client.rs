@@ -18,7 +18,7 @@ impl Deref for Client {
 impl Client {
     pub fn new(agent: Os) -> Self {
         return Client {
-            client: reqwest::Client::new(),
+            client: Default::default(),
             agent,
         };
     }
