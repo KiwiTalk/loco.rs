@@ -57,7 +57,7 @@ pub const INTERNAL_APP_SUBVERSION: u16 = internal_app_subversion!();
 pub const OS_VERSION: &str = os_version!();
 pub const LANGUAGE: &str = language!();
 pub const AUTH_USER_AGENT: &str = concat!("KT/", version!(), " Wd/", os_version!(), " ", language!());
-pub const AUTH_HEADER_AGENT: &str = concat!(agent!(), "/", version!(), "/", language!());
+pub const AUTH_HEADER_WITHOUT_AGENT: &str = concat!("/", version!(), "/", language!());
 // LOCO entry
 pub const LOCO_ENTRY: &str = "booking-loco.kakao.com";
 pub const LOCO_ENTRY_PORT: u16 = 443;
