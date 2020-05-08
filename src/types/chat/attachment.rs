@@ -15,19 +15,19 @@ pub enum ChatAttachment {
 
 pub struct PhotoAttachment {
     key_path: String,
-    width: i32,
-    height: i32,
+    width: u32,
+    height: u32,
     image_url: String,
     size: u64,
     thumbnail_url: Option<String>,
-    thumbnail_width: Option<i32>,
-    thumbnail_height: Option<i32>,
+    thumbnail_width: Option<u32>,
+    thumbnail_height: Option<u32>,
 }
 
 pub struct VideoAttachment {
     key_path: String,
-    width: i32,
-    height: i32,
+    width: u32,
+    height: u32,
     video_url: String,
     size: u64,
 }
@@ -52,8 +52,8 @@ pub struct EmoticonAttachment {
     emoticon_type: String,
     stop_at: i32,
     sound: String,
-    width: i32,
-    height: i32,
+    width: u32,
+    height: u32,
     description: String,
 }
 
@@ -73,8 +73,8 @@ pub struct SharpAttachment {
     redirect_url: String,
     content_type: String,
     image_url: Option<String>,
-    image_width: Option<i32>,
-    image_height: Option<i32>,
+    image_width: Option<u32>,
+    image_height: Option<u32>,
     content_list: Vec<SharpContent>,
 }
 
@@ -83,8 +83,8 @@ pub struct SharpContent {
     content_type: String,
     redirect_url: String,
     image_url: Option<String>,
-    image_width: Option<i32>,
-    image_height: Option<i32>,
+    image_width: Option<u32>,
+    image_height: Option<u32>,
 }
 
 pub struct ReplyAttachment {
@@ -98,7 +98,7 @@ pub struct ReplyAttachment {
 
 pub struct MentionContent {
     user_id: u64,
-    length: i32,
+    length: u32,
     index_list: Vec<i32>,
 }
 
