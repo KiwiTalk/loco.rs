@@ -35,7 +35,7 @@ macro_rules! define_host {
             pub const HOST: &str = $host;
             pub const URL: &str = concat!("https://", $host);
             pub fn url() -> Url {
-                Url::parse(URL).ok().unwrap()
+                Url::parse(URL).expect(concat!("Illegal url: ", "https://", $host))
             }
         }
     };
