@@ -10,6 +10,7 @@ pub struct ClientChannelUser {
 pub struct ClientUserInfo {
 }
 
+#[derive(Debug, Clone)]
 pub enum UserType {
     // -999999
     Undefined,

@@ -1,4 +1,5 @@
 // Maps to ClientSettingsStruct
+#[derive(Debug, Clone)]
 pub struct ClientSettings {
     status: i32,
     allow_pay: bool,

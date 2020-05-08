@@ -1,4 +1,5 @@
 // Maps to LoginAccessDataStruct
+#[derive(Debug, Clone)]
 pub struct LoginAccessData {
     status: i32,
     story_url: String,

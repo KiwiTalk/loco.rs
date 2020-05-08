@@ -1,6 +1,7 @@
 use crate::types::open_chat::OpenChatLinkType;
 
 // Maps to OpenLinkStruct
+#[derive(Debug, Clone)]
 pub struct OpenLink {
     link_id: u64,
     token: i32,
@@ -13,6 +14,7 @@ pub struct OpenLink {
 }
 
 // Maps to OpenMemberStruct
+#[derive(Debug, Clone)]
 pub struct OpenMember {
     user_id: u64,
     nickname: String,

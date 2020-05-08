@@ -2,6 +2,7 @@ use crate::types::user::UserType;
 use crate::types::open_chat::OpenChatMemberType;
 
 // Maps to MemberStruct
+#[derive(Debug, Clone)]
 pub struct Member {
     user_id: u64,
     nickname: String,

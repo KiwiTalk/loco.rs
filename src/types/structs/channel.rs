@@ -1,10 +1,12 @@
 // Maps to ChannelMetaSetStruct
+#[derive(Debug, Clone)]
 pub struct ChannelMetaSet {
     channel_id: u64,
     meta_list: Vec<ChannelMeta>,
 }
 
 // Maps to ChannelMetaStruct
+#[derive(Debug, Clone)]
 pub struct ChannelMeta {
     channel_meta_type: ChannelMetaType,
     revision: u64,
@@ -13,6 +15,7 @@ pub struct ChannelMeta {
     updated_at: i32,
 }
 
+#[derive(Debug, Clone)]
 pub enum ChannelMetaType {
     // 1
     Notice,
