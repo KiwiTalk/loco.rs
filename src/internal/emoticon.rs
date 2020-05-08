@@ -4,7 +4,7 @@ use crate::internal::Language;
 pub fn get_url(lang: &Language) -> Url {
     Url::parse(
         format!("http://item-{lang}.talk.kakao.co.kr", lang = lang.to_string()).as_ref()
-    ).ok().unwrap()
+    ).expect("Illegal url specified")
 }
 
 pub fn get_image_url(path: &str, lang: &Language) -> Url {
