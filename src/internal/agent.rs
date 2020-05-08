@@ -1,19 +1,24 @@
+use std::str::FromStr;
+
 pub enum Os {
     Win32,
     Mac,
     UWP,
 }
 
-impl Os {
-    pub fn from_str(str: &str) -> Option<Os> {
-        match str {
-            "win32" => Some(Os::Win32),
-            "mac" => Some(Os::Mac),
-            "uwp" => Some(Os::UWP),
-            _ => None,
+impl FromStr for Os {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "win32" => Ok(Os::Win32),
+            "mac" => Ok(Os::Mac),
+            "uwp" => Ok(Os::UWP),
+            _ => Err(()),
         }
     }
+}
 
+impl Os {
     pub fn as_str(&self) -> &'static str {
         match self {
             Os::Win32 => "win32",
