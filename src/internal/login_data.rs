@@ -8,8 +8,8 @@ pub struct LoginData {
     device_uuid: String,
     device_name: String,
     os_version: String,
+    permanent: bool,
     forced: bool,
-    permanent: bool
 }
 
 impl LoginData {
@@ -19,9 +19,9 @@ impl LoginData {
             password,
             device_uuid,
             device_name,
-            os_version
-            forced,
+            os_version,
             permanent,
+            forced,
         };
     }
 
