@@ -1,5 +1,7 @@
 use super::ChatKind;
 use serde::{Serialize, Deserialize};
+use super::user::UserId;
+
 
 pub enum ChatAttachment {
     Photo(PhotoAttachment),
@@ -129,7 +131,8 @@ pub struct SharpAttachment {
     #[serde(rename = "Q")]
     sharp_question: String,
     #[serde(rename = "V")]
-    content_type: String, // TODO: what is `V`?
+    content_type: String,
+    // TODO: what is `V`?
     #[serde(rename = "L")]
     sharp_link: String,
     #[serde(rename = "I")]
@@ -159,12 +162,12 @@ pub struct SharpContent {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MentionContent {
-    user_id: u64,
+pub struct Mention {
+    pub user_id: UserId,
     #[serde(rename = "len")]
-    length: u32,
+    pub length: u32,
     #[serde(rename = "at")]
-    index_list: Vec<i32>,
+    pub index_list: Vec<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -174,7 +177,7 @@ pub struct ReplyAttachment {
     // source_chat_id?
     source_user_id: u64,
     source_message: String,
-    source_mention_list: Vec<MentionContent>,
+    source_mention_list: Vec<Mention>,
     source_link_id: u64,
 }
 

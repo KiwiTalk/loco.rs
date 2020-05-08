@@ -3,36 +3,20 @@ pub struct ChatFeed {
 }
 
 pub enum FeedType {
-    // -999999
-    Undefined,
-    // -1
-    LocalLeave,
-    // 1
-    Invite,
-    // 2
-    Leave,
-    // 3
-    SecretLeave,
-    // 4
-    OpenLinkJoin,
-    // 5
-    OpenLinkDeleteLink,
-    // 6
-    OpenLinkKicked,
-    // 7
-    ChatKicked,
-    // 8
-    ChatDeleted,
-    // 10
-    RichContent,
-    // 11
-    OpenLinkStaffOn,
-    // 12
-    OpenLinkStaffOff,
-    // 13
-    OpenLinkRewriteFeed,
-    // 14
-    DeleteToAll,
-    // 14
-    OpenLinkHandOverHost,
+    Undefined = -999999,
+    LocalLeave = -1,
+    Invite = 1,
+    Leave = 2,
+    SecretLeave = 3,
+    OpenLinkJoin = 4,
+    OpenLinkDeleteLink = 5,
+    OpenLinkKicked = 6,
+    ChatKicked = 7,
+    ChatDeleted = 8,
+    RichContent = 10,
+    OpenLinkStaffOn = 11,
+    OpenLinkStaffOff = 12,
+    OpenLinkRewriteFeed = 13,
+    DeleteToAll = 14,
+    OpenLinkHandOverHost = 15,
 }
