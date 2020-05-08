@@ -1,4 +1,5 @@
 use super::ChatKind;
+use serde::{Serialize, Deserialize};
 
 pub enum ChatAttachment {
     Photo(PhotoAttachment),
@@ -13,114 +14,172 @@ pub enum ChatAttachment {
     KakaoLinkV2(KakaoLinkV2Attachment),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PhotoAttachment {
+    #[serde(rename = "k")]
     key_path: String,
-    width: u32,
-    height: u32,
+    #[serde(rename = "w")]
+    image_width: u32,
+    #[serde(rename = "h")]
+    image_height: u32,
+    #[serde(rename = "url")]
     image_url: String,
-    size: u64,
+    #[serde(rename = "s", alias = "size")]
+    image_size: u64,
+    #[serde(rename = "thumbnailUrl")]
     thumbnail_url: Option<String>,
+    #[serde(rename = "thumbnailWidth")]
     thumbnail_width: Option<u32>,
+    #[serde(rename = "thumbnailHeight")]
     thumbnail_height: Option<u32>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct VideoAttachment {
+    #[serde(rename = "tk")]
     key_path: String,
-    width: u32,
-    height: u32,
+    #[serde(rename = "w")]
+    video_width: u32,
+    #[serde(rename = "h")]
+    video_height: u32,
+    #[serde(rename = "url")]
     video_url: String,
-    size: u64,
+    #[serde(rename = "s", alias = "size")]
+    video_size: u64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FileAttachment {
+    #[serde(rename = "k")]
     key_path: String,
+    #[serde(rename = "name")]
+    file_name: String,
+    #[serde(rename = "url")]
     file_url: String,
-    name: String,
-    size: u64,
-    expire_date: u64,
+    #[serde(rename = "s", alias = "size")]
+    file_size: u64,
+    #[serde(rename = "expire")]
+    file_expired_at: u64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AudioAttachment {
+    #[serde(rename = "tk")]
     key_path: String,
+    #[serde(rename = "url")]
     audio_url: String,
-    size: u64,
+    #[serde(rename = "s", alias = "size")]
+    audio_size: u64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct EmoticonAttachment {
-    name: String,
-    path: String,
+    #[serde(rename = "path")]
+    emoticon_path: String,
+    #[serde(rename = "name")]
+    emoticon_name: String,
+    #[serde(rename = "type")]
     emoticon_type: String,
-    stop_at: i32,
-    sound: String,
-    width: u32,
-    height: u32,
-    description: String,
+    #[serde(rename = "s", default = "0")]
+    emoticon_stop_at: i32,
+    #[serde(rename = "alt")]
+    emoticon_alt: Option<String>,
+    #[serde(rename = "width")]
+    emoticon_width: Option<u32>,
+    #[serde(rename = "height")]
+    emoticon_height: Option<u32>,
+    #[serde(rename = "sound")]
+    emoticon_sound: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AnimatedEmoticonAttachment {
-
+    #[serde(rename = "path")]
+    emoticon_path: String,
+    #[serde(rename = "name")]
+    emoticon_name: String,
+    #[serde(rename = "type")]
+    emoticon_type: String,
+    #[serde(rename = "s", default = "0")]
+    emoticon_stop_at: i32,
+    #[serde(rename = "alt")]
+    emoticon_alt: Option<String>,
+    #[serde(rename = "width")]
+    emoticon_width: Option<u32>,
+    #[serde(rename = "height")]
+    emoticon_height: Option<u32>,
+    #[serde(rename = "sound")]
+    emoticon_sound: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LongTextAttachment {
-    path: String,
+    #[serde(rename = "path")]
+    text_path: String,
+    #[serde(rename = "k")]
     key_path: String,
-    size: u64,
-    sd: bool,
+    #[serde(rename = "s", alias = "size")]
+    text_size: u64,
+    #[serde(rename = "sd")]
+    sd: bool, // TODO: what is `sd`?
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharpAttachment {
-    question: String,
-    redirect_url: String,
-    content_type: String,
+    #[serde(rename = "Q")]
+    sharp_question: String,
+    #[serde(rename = "V")]
+    content_type: String, // TODO: what is `V`?
+    #[serde(rename = "L")]
+    sharp_link: String,
+    #[serde(rename = "I")]
     image_url: Option<String>,
+    #[serde(rename = "W")]
     image_width: Option<u32>,
+    #[serde(rename = "H")]
     image_height: Option<u32>,
-    content_list: Vec<SharpContent>,
+    #[serde(rename = "R", flatten)]
+    content_list: Vec<SharpContent>, // TODO: what is `R`?
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharpContent {
+    #[serde(rename = "D")]
     description: String,
+    #[serde(rename = "T")]
     content_type: String,
-    redirect_url: String,
+    #[serde(rename = "L")]
+    sharp_link: String,
+    #[serde(rename = "I")]
     image_url: Option<String>,
+    #[serde(rename = "W")]
     image_width: Option<u32>,
+    #[serde(rename = "H")]
     image_height: Option<u32>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct MentionContent {
+    user_id: u64,
+    #[serde(rename = "len")]
+    length: u32,
+    #[serde(rename = "at")]
+    index_list: Vec<i32>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReplyAttachment {
     source_type: ChatKind,
-    source_log_id: u64, // source_chat_id?
+    source_log_id: u64,
+    // source_chat_id?
     source_user_id: u64,
     source_message: String,
     source_mention_list: Vec<MentionContent>,
     source_link_id: u64,
 }
 
-#[derive(Debug, Clone)]
-pub struct MentionContent {
-    user_id: u64,
-    length: u32,
-    index_list: Vec<i32>,
-}
+pub struct KakaoLinkV2Attachment {}
 
-pub struct KakaoLinkV2Attachment {
+pub struct KakaoV2Content {}
 
-}
-
-pub struct KakaoV2Content {
-
-}
-
-pub struct ChatMention {
-
-}
+pub struct ChatMention {}

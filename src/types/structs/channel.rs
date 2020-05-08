@@ -17,40 +17,24 @@ pub struct ChannelMeta {
 
 #[derive(Debug, Clone)]
 pub enum ChannelMetaType {
-    // 1
-    Notice,
-    // 2
-    Group,
-    // 3
-    Title,
-    // 4
-    Profile,
-    // 5
-    TV,
-    // 6
-    Privilege,
-    // 7
-    LiveTV,
-    // 8
-    PlusBackground,
-    // 11
-    LiveTalkInfo,
-    // 12
-    LiveTalkCount,
+    Notice = 1,
+    Group = 2,
+    Title = 3,
+    Profile = 4,
+    TV = 5,
+    Privilege = 6,
+    LiveTV = 7,
+    PlusBackground = 8,
+    LiveTalkInfo = 11,
+    LiveTalkCount = 12,
 }
 
 // Maps to ChannelBoardMetaStruct
-pub struct ChannelBoardMeta {
-
-}
+pub struct ChannelBoardMeta {}
 
 pub enum ChannelBoardType {
-    // 0
-    None,
-    // 1
-    FloatingNotice,
-    // 2
-    SideNotice,
-    // 3
-    Badge,
+    None = 0,
+    FloatingNotice = 1,
+    SideNotice = 2,
+    Badge = 3,
 }
