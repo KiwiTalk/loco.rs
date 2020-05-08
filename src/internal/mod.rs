@@ -14,7 +14,7 @@ pub use xvc_key::XVCKey;
 pub use client::Client;
 pub use login_data::LoginData;
 
-/** macros **/
+/*** macros ***/
 #[macro_export]
 macro_rules! define {
 	($i:ident, $e:expr) => {
@@ -27,6 +27,7 @@ macro_rules! define {
 macro_rules! define_host {
     ($name:ident, $host:literal) => {
         pub mod $name {
+            #![allow(dead_code)]
             use reqwest::Url;
             pub const HOST: &str = $host;
             pub const URL: &str = concat!("https://", $host);
@@ -38,7 +39,7 @@ macro_rules! define_host {
 }
 
 
-/** defines **/
+/*** defines ***/
 define!{agent, "win32"}
 define!{version, "3.1.1"}
 define!{internal_app_subversion, 2441}
@@ -48,7 +49,7 @@ define!{language, "ko"}
 //hosts
 define_host!(internal, "sb-talk.kakao.com");
 
-/** constants **/
+/*** constants ***/
 pub const AGENT: &str = agent!();
 // Maps to InternalAppVersion
 pub const APP_VERSION: &str = concat!(version!(), ".", internal_app_subversion!());

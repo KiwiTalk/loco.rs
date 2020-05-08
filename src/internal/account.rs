@@ -1,5 +1,3 @@
-use serde_qs;
-use std::future::Future;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{header, Url};
 use crate::{define_host, define};

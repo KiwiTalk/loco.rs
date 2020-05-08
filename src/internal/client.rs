@@ -1,9 +1,8 @@
 use std::ops::Deref;
 use serde_qs;
 use std::future::Future;
-use reqwest::{Url, Response, Error};
+use reqwest::{Response, Error};
 use crate::internal::{AUTH_USER_AGENT, account, LoginData};
-use sha2::Digest;
 
 pub struct Client {
     client: reqwest::Client

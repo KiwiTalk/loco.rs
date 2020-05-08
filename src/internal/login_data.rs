@@ -1,4 +1,3 @@
-use crate::internal;
 use crate::internal::XVCKey;
 use serde::{Serialize, Deserialize};
 
