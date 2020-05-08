@@ -89,7 +89,7 @@ pub fn get_upload_url(attach_type: AttachmentType) -> &'static str {
         AttachmentType::Image => media_upload::URL,
         AttachmentType::Audio => audio_upload::URL,
         AttachmentType::Video => video_upload::URL,
-        _ => media_upload::URL,
+        AttachmentType::File => media_upload::URL,
     }
 }
 
@@ -99,7 +99,6 @@ pub fn get_attachment_url(attach_type: AttachmentType) -> &'static str {
         AttachmentType::Audio => audio_file::URL,
         AttachmentType::Video => video_file::URL,
         AttachmentType::File => media_file::URL,
-        _ => media_file::URL,
     }
 }
 
