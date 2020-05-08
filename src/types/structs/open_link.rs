@@ -6,7 +6,7 @@ pub struct OpenLink {
     token: i32,
     link_name: String,
     link_url: String,
-    link_type: OpenLinkType,
+    link_type: OpenChatLinkType,
     owner: OpenMember,
     description: String,
     cover_url: String,
