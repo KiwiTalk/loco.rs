@@ -6,20 +6,22 @@ pub struct LoginData {
     email: String,
     password: String,
     device_uuid: String,
-    os_version: String,
     device_name: String,
+    os_version: String,
+    forced: bool,
     permanent: bool
 }
 
 impl LoginData {
-    pub fn new(email: String, password: String, device_uuid: String, device_name: String, permanent: bool, os_version: String) -> LoginData {
+    pub fn new(email: String, password: String, device_uuid: String, device_name: String, os_version: String, permanent: bool, forced: bool) -> LoginData {
         return LoginData {
             email,
             password,
             device_uuid,
-            os_version,
             device_name,
-            permanent
+            os_version
+            forced,
+            permanent,
         };
     }
 
