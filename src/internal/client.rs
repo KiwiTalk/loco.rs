@@ -2,10 +2,13 @@ use std::ops::Deref;
 use serde_qs;
 use std::future::Future;
 use reqwest::{Response, Error};
-use crate::internal::{os::Os, AUTH_USER_AGENT, account, LoginData};
+use crate::internal::{agent::Os, AUTH_USER_AGENT, account, LoginData};
+use sha2::Digest;
+use std::borrow::Borrow;
 
 pub struct Client {
-    client: reqwest::Client
+    client: reqwest::Client,
+    agent: Os,
 }
 
 impl Deref for Client {
@@ -17,14 +20,15 @@ impl Deref for Client {
 }
 
 impl Client {
-    pub fn new() -> Self {
+    pub fn new(agent: Os) -> Self {
         return Client {
-            client: reqwest::Client::new()
+            client: reqwest::Client::new(),
+            agent,
         };
     }
 
-    pub fn request_login(&self, os: Os, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
-        return self.post(account::get_login_url(os))
+    pub fn request_login(&self, login_data: &LoginData) -> impl Future<Output = Result<Response, Error>> {
+        return self.post(account::get_login_url(self.agent.borrow()))
             .headers(account::get_auth_header(&login_data.to_xvc_key(AUTH_USER_AGENT)))
             .body(serde_qs::to_string(
                 login_data

@@ -7,7 +7,7 @@ mod attachment;
 mod xvc_key;
 mod client;
 mod login_data;
-pub mod os;
+pub mod agent;
 
 pub use attachment::AttachmentType;
 pub use language::Language;
