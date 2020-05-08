@@ -15,7 +15,7 @@ pub fn get_auth_header(agent: &Os, xvc_key: &XVCKey) -> HeaderMap<HeaderValue> {
     let mut header_map = HeaderMap::new();
     header_map.append(header::CONTENT_TYPE, HeaderValue::from_static("application/x-www-form-urlencoded"));
     header_map.append(header::HOST, HeaderValue::from_static(account::HOST));
-    header_map.append("A", HeaderValue::from_static(concat!(agent.as_str(), AUTH_HEADER_WITHOUT_AGENT)));
+    header_map.append("A", HeaderValue::from_str(&format!("{}{}", agent.as_str(), AUTH_HEADER_WITHOUT_AGENT)).ok().unwrap());
     header_map.append("X-VC", HeaderValue::from_str(&xvc_key[0..16]).ok().unwrap());
     header_map.append(header::USER_AGENT, HeaderValue::from_static(AUTH_USER_AGENT));
     header_map.append(header::ACCEPT_LANGUAGE, HeaderValue::from_static(LANGUAGE));
