@@ -1,7 +1,12 @@
 [package]
 name = "loco"
 version = "0.1.0"
-authors = ["Seungjae Park <astro.psj@gmail.com>"]
+authors = [
+    "Seungjae Park <astro.psj@gmail.com>",
+    "JellyBrick <shlee1503@naver.com>",
+    "kiwiyou <kiwiyou.dev@gmail.com>",
+    "Sangwon Ryu <bdboy090@naver.com>"
+]
 edition = "2018"
 description = "Loco Protocol Wrapper for Rust"
 documentation = "https://docs.rs/loco"
