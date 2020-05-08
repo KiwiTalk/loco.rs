@@ -11,6 +11,7 @@ mod login_data;
 pub use attachment::AttachmentType;
 pub use language::Language;
 pub use xvc_key::XVCKey;
+pub use client::Client;
 pub use login_data::LoginData;
 
 /** macros **/
