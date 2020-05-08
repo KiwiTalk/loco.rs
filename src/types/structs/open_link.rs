@@ -1,3 +1,5 @@
+use crate::types::open_chat::OpenChatLinkType;
+
 // Maps to OpenLinkStruct
 pub struct OpenLink {
     link_id: u64,
@@ -8,13 +10,6 @@ pub struct OpenLink {
     owner: OpenMember,
     description: String,
     cover_url: String,
-}
-
-pub enum OpenLinkType {
-    // 1
-    PROFILE,
-    // 2
-    CHATROOM,
 }
 
 // Maps to OpenMemberStruct
