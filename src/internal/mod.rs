@@ -125,18 +125,18 @@ pub const ACCOUNT_PATH: &str = "account";
 
 // TODO: Account, LogonAccount, getInternalURL, getAccountInternalUrl, getEmoticonHeader
 
-pub fn getEmoticonUrl(lang: &str) -> String {
+pub fn get_emoticon_url(lang: &str) -> String {
     format!("http://item-{lang}.talk.kakao.co.kr/dw", lang = lang)
 }
 
-pub fn getEmoticonImageUrl(path: &str, lang: &str) -> String {
+pub fn get_emoticon_image_url(path: &str, lang: &str) -> String {
     let mut url = getEmoticonUrl(lang);
     url.push('/');
     url.push_str(path);
     url
 }
 
-pub fn getEmoticonTitleUrl(id: &str, ext: &str, lang: &str) -> String {
+pub fn get_emoticon_title_url(id: &str, ext: &str, lang: &str) -> String {
     let mut url = getEmoticonUrl(lang);
     url.push('/');
     url.push_str(id);
@@ -145,7 +145,7 @@ pub fn getEmoticonTitleUrl(id: &str, ext: &str, lang: &str) -> String {
     url
 }
 
-pub fn getEmoticonPackUrl(id: &str, lang: &str) -> String {
+pub fn get_emoticon_pack_url(id: &str, lang: &str) -> String {
     let mut url = getEmoticonUrl(lang);
     url.push('/');
     url.push_str(id);
@@ -153,7 +153,7 @@ pub fn getEmoticonPackUrl(id: &str, lang: &str) -> String {
     url
 }
 
-pub fn getEmoticonThumbnailPackUrl(id: &str, lang: &str) -> String {
+pub fn get_emoticon_thumbnail_pack_url(id: &str, lang: &str) -> String {
     let mut url = getEmoticonUrl(lang);
     url.push('/');
     url.push_str(id);
