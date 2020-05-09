@@ -14,14 +14,9 @@ pub struct ClientUserInfo {
 
 #[derive(Debug, Clone)]
 pub enum UserType {
-    // -999999
-    Undefined,
-    // -100
-    NotFriend,
-    // 9
-    Deactivated,
-    // 100
-    Friend,
-    // 1000
-    OpenProfile,
+    Undefined = -999999,
+    NotFriend = -100,
+    Deactivated = 9,
+    Friend = 100,
+    OpenProfile = 1000,
 }
