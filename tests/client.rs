@@ -12,7 +12,7 @@ pub fn get_device_register_data() -> DeviceRegisterData {
             false,
             false
         ),
-        0000
+        "0000".to_string()
     )
 }
 
