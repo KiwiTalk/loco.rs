@@ -192,8 +192,8 @@ pub enum ProtocolInfo {
     GetMoimMeta,
     #[serde(rename = "MOCLICK")]
     MoimClick,
-    SetST,
+    SetST, // TODO: What is ST?
     PushAck,
-    SPush,
+    SPush, // TODO: What is S?
     GetToken,
 }
