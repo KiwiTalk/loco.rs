@@ -22,5 +22,7 @@ reqwest = "0.10"
 sha2 = "0.8.1"
 hex = "0.4.2"
 serde = { version = "1.0", features = ["derive"] }
-tokio = { version = "0.2.20", features = ["macros"] }
 data-encoding = "2.2.0"
+
+[dev-dependencies]
+tokio = { version = "0.2.20", features = ["macros"] }
