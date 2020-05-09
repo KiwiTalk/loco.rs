@@ -2,8 +2,21 @@ use crate::internal::{account, agent::Os, LoginData, DeviceRegisterData, AUTH_US
 use reqwest::{Error, Response};
 use std::ops::Deref;
 
+#[derive(Hash, PartialEq, Eq, Clone)]
+pub enum Event {
+    Login,
+    Disconnected,
+    Message,
+    MessageRead,
+    UserJoin,
+    UserLeft,
+    JoinChannel,
+    LeftChannel,
+}
+
 pub struct Client {
     client: reqwest::Client,
+    emitter: parallel_event_emitter::ParallelEventEmitter<Event>,
     agent: Os,
 }
 
@@ -19,19 +32,24 @@ impl Client {
     pub fn new(agent: Os) -> Self {
         return Client {
             client: Default::default(),
+            emitter: Default::default(),
             agent,
         };
     }
 
-    pub async fn request_login(&self, login_data: &LoginData) -> Result<Response, Error> {
-        self.post(account::get_login_url(&self.agent))
+    pub async fn request_login(&mut self, login_data: &LoginData) -> Result<Response, Error> {
+        let result: Result<Response, Error> = self.post(account::get_login_url(&self.agent))
             .headers(account::get_auth_header(
                 &self.agent,
                 &login_data.to_xvc_key(AUTH_USER_AGENT),
             ))
             .form(login_data)
             .send()
-            .await
+            .await;
+
+        self.emitter.emit(Event::Login);
+
+        result
     }
 
     pub async fn request_passcode(&self, login_data: &LoginData) -> Result<Response, Error> {
