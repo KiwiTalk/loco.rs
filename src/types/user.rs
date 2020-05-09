@@ -1,4 +1,6 @@
-pub struct ChatUser {
+pub type UserId = u64;
+
+pub struct User {
 }
 
 pub struct ClientChatUser {
