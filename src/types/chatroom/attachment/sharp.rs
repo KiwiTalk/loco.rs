@@ -14,75 +14,207 @@ pub struct SharpAttachment {
     pub resource_type: String,
     // TODO: what is `V`?
     #[serde(rename = "R")]
-    pub resources: Vec<SharpResource>,
+    pub resources: Vec<resource::Resource>,
 
     #[serde(rename = "F")]
-    pub footer: Option<SharpButtonList>,
+    pub footer: Option<resource::ButtonList>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct SharpResource {
-    pub kind: SharpResourceKind,
+pub mod resource {
+    use serde::{Deserialize, Serialize};
+
+    use super::*;
+
+    // TODO: will be integrated with `ResourceKind` in future.
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub enum Type {
+        None,
+        List,
+        Image,
+        VideoClip,
+        Weather,
+        Movie,
+        Media,
+        Rank,
+        Simple,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Resource {
+        pub kind: ResourceKind,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub enum ResourceKind {
+        ButtonList(ButtonList),
+        Image(Image),
+        Media(Media),
+        Movie(Movie),
+        Rank(Rank),
+        Video(Video),
+        Weather(Weather),
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct ButtonList {
+        #[serde(rename = "BU")]
+        pub buttons: Vec<fragment::Button>,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Image {
+        #[serde(rename = "I")]
+        pub image: Option<fragment::Image>,
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "T")]
+        pub text: Option<fragment::Text>,
+        #[serde(rename = "D")]
+        pub description: Option<String>,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Media {
+        #[serde(rename = "I")]
+        pub image: Option<fragment::Image>,
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "T")]
+        pub text: Option<fragment::Text>,
+        #[serde(rename = "D")]
+        pub description: Option<fragment::Text>,
+        #[serde(rename = "DL")]
+        pub details: Vec<fragment::Text>,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Movie {
+        #[serde(rename = "IL")]
+        pub images: Vec<fragment::Image>,
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "T")]
+        pub text: Option<fragment::Text>,
+        #[serde(rename = "D")]
+        pub description: Option<String>,
+        #[serde(rename = "DL")]
+        pub details: Vec<fragment::Text>,
+        #[serde(rename = "ST")]
+        pub stars: String,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Rank {
+        #[serde(rename = "I")]
+        pub image: Option<fragment::Image>,
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "T")]
+        pub text: Option<fragment::Text>,
+        #[serde(rename = "RA")]
+        pub rank: Option<String>,
+        #[serde(rename = "ST")]
+        pub stars: String,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Video {
+        #[serde(rename = "I")]
+        pub image: Option<fragment::Image>,
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "T")]
+        pub text: Option<fragment::Text>,
+        #[serde(rename = "D")]
+        pub description: Option<String>,
+        #[serde(rename = "PT")]
+        pub playtime: i32, // TODO: what is `playtime` format?
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Weather {
+        #[serde(rename = "MA")]
+        pub main_weather: Vec<fragment::Weather>,
+        #[serde(rename = "SU")]
+        pub sub_weather: Vec<fragment::Weather>,
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "PL")]
+        pub place: Option<String>,
+        #[serde(rename = "D")]
+        pub description: Option<String>,
+        #[serde(rename = "TM")]
+        pub updated_at: String,
+    }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum SharpResourceKind {
-    SharpButtonList(SharpButtonList),
-    SharpImage(SharpImage),
-}
+pub mod fragment {
+    use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct SharpButtonList {
-    #[serde(rename = "BU")]
-    pub buttons: Vec<SharpButtonFragment>,
-}
+    pub struct Fragment {
+        kind: FragmentKind,
+    }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct SharpImage {
-    #[serde(rename = "I")]
-    pub image: Option<SharpImageFragment>,
-    #[serde(rename = "L")]
-    pub link: String,
-    #[serde(rename = "T")]
-    pub text: Option<SharpTextFragment>,
-    #[serde(rename = "D")]
-    pub description: Option<String>,
-}
+    pub enum FragmentKind {
+        Button(Button),
+        Image(Image),
+        Simple(Simple),
+        Text(Text),
+        Weather(Weather),
+    }
 
-pub struct SharpFragment {
-    kind: SharpFragmentKind,
-}
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Button {
+        #[serde(rename = "T")]
+        pub text: String,
+        #[serde(rename = "L")]
+        pub link: Option<String>,
+        #[serde(rename = "TP")]
+        pub icon: Option<String>, // TODO: what is `TP`?
+    }
 
-pub enum SharpFragmentKind {
-    Button(SharpButtonFragment),
-    Image(SharpImageFragment),
-    Text(SharpTextFragment),
-}
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Image {
+        #[serde(rename = "I")]
+        pub url: String,
+        #[serde(rename = "W")]
+        pub width: Option<usize>,
+        #[serde(rename = "H")]
+        pub height: Option<usize>,
+    }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct SharpButtonFragment {
-    #[serde(rename = "T")]
-    pub text: String,
-    #[serde(rename = "L")]
-    pub link: Option<String>,
-    #[serde(rename = "TP")]
-    pub icon: Option<String>, // TODO: what is `TP`?
-}
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Simple {
+        #[serde(rename = "L")]
+        pub link: String,
+        #[serde(rename = "T")]
+        pub text: Option<String>,
+        #[serde(rename = "D")]
+        pub description: Option<String>,
+    }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct SharpImageFragment {
-    #[serde(rename = "I")]
-    pub url: String,
-    #[serde(rename = "W")]
-    pub width: Option<usize>,
-    #[serde(rename = "H")]
-    pub height: Option<usize>,
-}
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Text {
+        #[serde(rename = "T")]
+        pub text: String,
+        #[serde(rename = "DE")]
+        pub description: Option<String>,
+    }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct SharpTextFragment {
-    #[serde(rename = "T")]
-    pub text: String,
-    #[serde(rename = "DE")]
-    pub description: Option<String>,
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub struct Weather {
+        #[serde(rename = "T")]
+        pub text: Option<Text>,
+        #[serde(rename = "TE")]
+        pub temperature: String,
+        #[serde(rename = "IC")]
+        pub icon: WeatherIcon,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Clone)]
+    pub enum WeatherIcon {
+        Sunny = 0,
+        CloudyDay = 3,
+        CloudyNight = 2,
+    }
 }
