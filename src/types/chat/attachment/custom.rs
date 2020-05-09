@@ -66,7 +66,7 @@ pub struct ImageFragment {
     playtime: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct ButtonFragment {
     text: String,
     display_target: Option<ButtonDisplayTarget>,
@@ -197,4 +197,69 @@ pub struct CustomAttachment {
     content: Option<CustomContent>,
     #[serde(rename = "K")]
     link_info: Option<KakaoLinkInfo>,
+}
+
+impl<'de> Deserialize<'de> for ButtonFragment {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::de::Deserializer<'de>
+    {
+        #[derive(Deserialize)]
+        struct ButtonFragmentRaw {
+            #[serde(rename = "BU")]
+            inner: ButtonFragmentRawInner,
+            #[serde(rename = "L")]
+            link: LinkFragment,
+        }
+
+        #[derive(Deserialize)]
+        struct ButtonFragmentRawInner {
+            #[serde(rename = "T")]
+            text: String,
+            #[serde(rename = "SR")]
+            display_target: Option<ButtonDisplayTarget>,
+        }
+
+        let raw = ButtonFragmentRaw::deserialize(deserializer)?;
+        Ok(Self {
+            text: raw.inner.text,
+            display_target: raw.inner.display_target,
+            link: raw.link,
+        })
+    }
+}
+
+impl Serialize for ButtonFragment {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        #[derive(Serialize)]
+        struct ButtonFragmentRaw<'a> {
+            #[serde(rename = "BU")]
+            inner: ButtonFragmentRawInner<'a>,
+            #[serde(rename = "L")]
+            link: &'a LinkFragment,
+        }
+
+        #[derive(Serialize)]
+        struct ButtonFragmentRawInner<'a> {
+            #[serde(rename = "T")]
+            text: &'a str,
+            #[serde(rename = "SR")]
+            display_target: &'a Option<ButtonDisplayTarget>,
+        }
+
+        let inner = ButtonFragmentRawInner {
+            text: &self.text,
+            display_target: &self.display_target,
+        };
+
+        let raw = ButtonFragmentRaw {
+            inner,
+            link: &self.link
+        };
+
+        raw.serialize(serializer)
+    }
 }
