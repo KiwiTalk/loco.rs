@@ -48,6 +48,4 @@ impl AttachmentType {
         url.set_path(upload_path);
         url
     }
-
-
 }

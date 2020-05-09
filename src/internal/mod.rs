@@ -7,6 +7,7 @@ mod attachment;
 mod xvc_key;
 mod client;
 mod login_data;
+mod device_register_data;
 pub mod agent;
 
 pub use attachment::AttachmentType;
@@ -14,6 +15,7 @@ pub use language::Language;
 pub use xvc_key::XVCKey;
 pub use client::Client;
 pub use login_data::LoginData;
+pub use device_register_data::DeviceRegisterData;
 
 /*** macros ***/
 #[macro_export]
@@ -33,7 +35,7 @@ macro_rules! define_host {
             pub const HOST: &str = $host;
             pub const URL: &str = concat!("https://", $host);
             pub fn url() -> Url {
-                Url::parse(URL).ok().unwrap()
+                Url::parse(URL).expect(concat!("Illegal url: ", "https://", $host))
             }
         }
     };
