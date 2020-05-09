@@ -39,7 +39,7 @@ pub enum ProtocolInfo {
     MShip, // TODO: What is M?
     GetTrailer,
     Invoice,
-    MInvoice,
+    MInvoice, // TODO: What is M?
     #[serde(rename = "MCHKTOKENS")]
     MCheckTokens,
     Create,
