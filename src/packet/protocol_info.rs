@@ -139,7 +139,7 @@ pub enum ProtocolInfo {
     Blind,
     SyncBlind,
     ReportLink,
-    KLSync,
+    KLSync, // TODO: What is KL?
     #[serde(rename = "KLDELITEM")]
     KLDeleteItem,
     React,
