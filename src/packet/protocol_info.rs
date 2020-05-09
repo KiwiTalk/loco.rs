@@ -5,7 +5,7 @@ use serde::{Serialize, Deserialize};
 pub enum ProtocolInfo {
     #[serde(rename = "GETCONF")]
     GetConfig,
-    BuyCS,
+    BuyCS, // TODO: What is CS?
     #[serde(rename = "NETTEST")]
     NetworkTest,
     CheckIn,
