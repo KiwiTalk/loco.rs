@@ -6,7 +6,7 @@ use std::ops::Deref;
 pub struct DeviceRegisterData {
     #[serde(flatten)]
     login_data: LoginData,
-    pub passcode: u16,
+    pub passcode: String,
 }
 
 impl Deref for DeviceRegisterData {
@@ -18,7 +18,7 @@ impl Deref for DeviceRegisterData {
 }
 
 impl DeviceRegisterData {
-    pub fn new(login_data: LoginData, passcode: u16) -> DeviceRegisterData {
+    pub fn new(login_data: LoginData, passcode: String) -> DeviceRegisterData {
         return DeviceRegisterData {
             login_data,
             passcode
