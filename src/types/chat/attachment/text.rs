@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use super::super::{ChatKind, Mention, LogId, super::user::UserId};
+use super::super::{ChatType, Mention, LogId, super::user::UserId};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LongTextAttachment {
@@ -16,7 +16,7 @@ pub struct LongTextAttachment {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReplyAttachment {
     #[serde(rename = "src_type")]
-    source_type: ChatKind,
+    source_type: ChatType,
     #[serde(rename = "src_logId")]
     source_log_id: LogId,
     #[serde(rename = "src_userId")]

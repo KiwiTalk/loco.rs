@@ -9,18 +9,19 @@ pub struct SharpAttachment {
     #[serde(rename = "I")]
     pub thumbnail_url: Option<String>,
     #[serde(rename = "V")]
-    pub resource_type: String,
-    // TODO: what is `V`?
+    pub resource_type: String, // TODO: what is `V`?
     #[serde(rename = "R")]
     pub resources: Vec<SharpResource>,
     #[serde(rename = "F")]
     pub footer: Option<SharpButtonList>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharpResource {
     kind: SharpResourceKind,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum SharpResourceKind {
     SharpButtonList(SharpButtonList),
     SharpImage(SharpImage),

@@ -10,6 +10,7 @@ pub use feed::*;
 pub type LogId = u64;
 pub type Timestamp = u64;
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ChatType {
     Feed = 0,
     Text = 1,
@@ -66,7 +67,7 @@ pub struct Chat {
 }
 
 impl Chat {
-    pub fn get_mentions(&self, user_id: UserId) -> Vec<Mention> {
+    pub fn get_mentions(&self, user_id: UserId) -> Vec<&Mention> {
         self.mentions.iter()
             .filter(|mention| { mention.user_id == user_id })
             .collect()
@@ -77,7 +78,7 @@ impl Chat {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub enum ChatKind {
     Feed(FeedChat),
     Text(TextChat),
