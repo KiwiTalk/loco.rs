@@ -1,18 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 pub type UserId = u64;
 
-pub struct User {
-}
-
-pub struct ClientChatUser {
-}
-
-pub struct ClientChannelUser {
-}
-
-pub struct ClientUserInfo {
-}
-
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum UserType {
     Undefined = -999999,
     NotFriend = -100,
@@ -20,3 +10,17 @@ pub enum UserType {
     Friend = 100,
     OpenProfile = 1000,
 }
+
+impl Default for UserType {
+    fn default() -> Self {
+        UserType::Undefined
+    }
+}
+
+pub struct User {}
+
+pub struct ClientChatUser {}
+
+pub struct ClientChannelUser {}
+
+pub struct ClientUserInfo {}

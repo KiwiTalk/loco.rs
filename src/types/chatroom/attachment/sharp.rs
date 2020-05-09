@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharpAttachment {
@@ -6,19 +6,23 @@ pub struct SharpAttachment {
     pub question: String,
     #[serde(rename = "L")]
     pub link: String,
+
     #[serde(rename = "I")]
     pub thumbnail_url: Option<String>,
+
     #[serde(rename = "V")]
-    pub resource_type: String, // TODO: what is `V`?
+    pub resource_type: String,
+    // TODO: what is `V`?
     #[serde(rename = "R")]
     pub resources: Vec<SharpResource>,
+
     #[serde(rename = "F")]
     pub footer: Option<SharpButtonList>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharpResource {
-    kind: SharpResourceKind,
+    pub kind: SharpResourceKind,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -30,7 +34,7 @@ pub enum SharpResourceKind {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SharpButtonList {
     #[serde(rename = "BU")]
-    pub buttons: Vec<SharpButtonFragment>
+    pub buttons: Vec<SharpButtonFragment>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

@@ -1,7 +1,18 @@
-pub struct ChatFeed {
+use serde::{Deserialize, Serialize};
+
+use crate::types::Member;
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Feed {
+    #[serde(rename = "feedType")]
     pub feed_type: FeedType,
+    pub text: Option<String>,
+    pub member: Option<Member>,
+    pub members: Vec<Member>,
+    pub inviter: Option<Member>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum FeedType {
     Undefined = -999999,
     LocalLeave = -1,
