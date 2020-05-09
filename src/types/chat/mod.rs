@@ -1,10 +1,14 @@
 mod attachment;
 mod feed;
 
+use serde::{Serialize, Deserialize};
 pub use super::user::{User, UserId};
 pub use super::channel::Channel;
 pub use attachment::*;
 pub use feed::*;
+
+pub type LogId = u64;
+pub type Timestamp = u64;
 
 pub enum ChatType {
     Feed = 0,
@@ -39,6 +43,15 @@ pub enum ChatType {
     ApiTemplate = 91,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Mention {
+    pub user_id: UserId,
+    #[serde(rename = "len")]
+    pub length: u32,
+    #[serde(rename = "at")]
+    pub index_list: Vec<i32>,
+}
+
 pub struct Chat {
     pub kind: ChatKind,
     pub prev_log_id: i64,
@@ -64,7 +77,7 @@ impl Chat {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ChatKind {
     Feed(FeedChat),
     Text(TextChat),
