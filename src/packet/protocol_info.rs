@@ -36,7 +36,7 @@ pub enum ProtocolInfo {
     #[serde(rename = "BLMEMBER")]
     BlockMember,
     Ship,
-    MShip,
+    MShip, // TODO: What is M?
     GetTrailer,
     Invoice,
     MInvoice,
