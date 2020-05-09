@@ -5,18 +5,13 @@ pub struct OpenChatManager {
 
 #[derive(Debug, Clone)]
 pub enum OpenChatLinkType {
-    // 1
-    Profile,
-    // 2
-    Chatroom,
+    Profile = 1,
+    Chatroom = 2,
 }
 
 #[derive(Debug, Clone)]
 pub enum OpenChatMemberType {
-    // 1
-    Unknown,
-    // 2
-    None,
-    // 4
-    Manager,
+    Unknown = 1,
+    None = 2,
+    Manager = 4,
 }
