@@ -1,12 +1,11 @@
 use loco::internal::{agent::Os, Client, DeviceRegisterData, LoginData};
-use data_encoding::BASE64;
 
 pub fn get_device_register_data() -> DeviceRegisterData {
     DeviceRegisterData::new(
         LoginData::new(
             "test@gmail.com".to_string(),
             "password".to_string(),
-            BASE64.encode("02B9D784-75FE-47A7-AD47-C18B0AF11A1C".as_bytes()),
+            "2bf46274-780c-4af1-9583-c5e1d7e866b7",
             "loco.rs".to_string(),
             "10.0".to_string(),
             false,

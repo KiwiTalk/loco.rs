@@ -1,5 +1,6 @@
 use crate::internal::XVCKey;
 use serde::{Serialize, Deserialize};
+use data_encoding::BASE64;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct LoginData {
@@ -13,11 +14,11 @@ pub struct LoginData {
 }
 
 impl LoginData {
-    pub fn new(email: String, password: String, device_uuid: String, device_name: String, os_version: String, permanent: bool, forced: bool) -> LoginData {
+    pub fn new(email: String, password: String, device_uuid: &str, device_name: String, os_version: String, permanent: bool, forced: bool) -> LoginData {
         return LoginData {
             email,
             password,
-            device_uuid,
+            device_uuid: BASE64.encode(device_uuid.as_bytes()),
             device_name,
             os_version,
             permanent,
