@@ -1,4 +1,4 @@
-use loco::internal::{agent::Os, Client, DeviceRegisterData, LoginData};
+use loco::internal::{agent::Os, request, Client, DeviceRegisterData, LoginData};
 
 pub fn get_device_register_data() -> DeviceRegisterData {
     DeviceRegisterData::new(
@@ -17,22 +17,28 @@ pub fn get_device_register_data() -> DeviceRegisterData {
 
 #[tokio::test]
 async fn login() {
-    let result = Client::new(Os::Win32).new_request().certification.login(&get_device_register_data()).await;
+    let loco_client = Client::new(Os::Win32);
+    let result = request::Certification::login(&loco_client, &get_device_register_data()).await;
     let text = result.unwrap();
+
     println!("{}", text.text().await.unwrap());
 }
 
 #[tokio::test]
 async fn register_device() {
-    let result = Client::new(Os::Win32).new_request().certification.device(&get_device_register_data()).await;
+    let loco_client = Client::new(Os::Win32);
+    let result = request::Certification::device(&loco_client, &get_device_register_data()).await;
     let text = result.unwrap();
+
     println!("{}", text.text().await.unwrap());
 }
 
 #[tokio::test]
 async fn passcode() {
-    let result = Client::new(Os::Win32).new_request().certification.passcode(&get_device_register_data()).await;
+    let loco_client = Client::new(Os::Win32);
+    let result = request::Certification::passcode(&loco_client, &get_device_register_data()).await;
     let text = result.unwrap();
+
     println!("{}", text.text().await.unwrap());
 }
 

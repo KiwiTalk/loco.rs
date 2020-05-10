@@ -7,7 +7,7 @@ mod attachment;
 mod xvc_key;
 mod client;
 mod login_data;
-mod request;
+pub mod request;
 mod device_register_data;
 pub mod agent;
 
