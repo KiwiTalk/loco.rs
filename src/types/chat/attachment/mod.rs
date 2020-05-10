@@ -1,8 +1,10 @@
+mod custom;
 mod file;
 mod sharp;
 mod sticker;
 mod text;
 
+pub use custom::*;
 pub use file::*;
 pub use sharp::*;
 pub use sticker::*;
