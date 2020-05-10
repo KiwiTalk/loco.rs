@@ -168,11 +168,11 @@ pub struct CustomInfo {
     #[serde(rename = "LOCK")]
     secure: Option<bool>,
     #[serde(rename = "FW")]
-    fw: Option<bool>, // Its name should be changed.
+    fw: Option<bool>,
     #[serde(rename = "RF")]
-    r#ref: String, // Its name must be changed!
+    reference: String,
     #[serde(rename = "AD")]
-    ad: Option<bool>, // Maybe is_ad?
+    ad: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
