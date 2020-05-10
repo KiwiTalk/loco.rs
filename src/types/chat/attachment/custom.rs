@@ -16,7 +16,7 @@ pub enum ButtonStyle {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ButtonDisplayTarget {
-    #[serde(rename = "Both")]
+    #[serde(rename = "both")]
     All,
     #[serde(rename = "sender")]
     Sender,
