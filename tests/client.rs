@@ -17,21 +17,21 @@ pub fn get_device_register_data() -> DeviceRegisterData {
 
 #[tokio::test]
 async fn login() {
-    let result = Client::new(Os::Win32).request_login(&get_device_register_data()).await;
+    let result = Client::new(Os::Win32).new_request().certification.login(&get_device_register_data()).await;
     let text = result.unwrap();
     println!("{}", text.text().await.unwrap());
 }
 
 #[tokio::test]
 async fn register_device() {
-    let result = Client::new(Os::Win32).register_device(&get_device_register_data()).await;
+    let result = Client::new(Os::Win32).new_request().certification.device(&get_device_register_data()).await;
     let text = result.unwrap();
     println!("{}", text.text().await.unwrap());
 }
 
 #[tokio::test]
-async fn request_passcode() {
-    let result = Client::new(Os::Win32).request_passcode(&get_device_register_data()).await;
+async fn passcode() {
+    let result = Client::new(Os::Win32).new_request().certification.passcode(&get_device_register_data()).await;
     let text = result.unwrap();
     println!("{}", text.text().await.unwrap());
 }

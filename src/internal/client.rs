@@ -1,10 +1,22 @@
-use crate::internal::{account, agent::Os, LoginData, DeviceRegisterData, AUTH_USER_AGENT};
+use crate::internal::{account, agent::Os, request};
 use reqwest::{Error, Response};
 use std::ops::Deref;
 
+pub struct Request {
+    pub certification: request::Certification,
+}
+
+impl Request {
+    fn new(client: Client) -> Self {
+        return Request {
+            certification: request::Certification::new(client)
+        };
+    }
+}
+
 pub struct Client {
-    client: reqwest::Client,
-    agent: Os,
+    pub client: reqwest::Client,
+    pub agent: Os,
 }
 
 impl Deref for Client {
@@ -23,33 +35,7 @@ impl Client {
         };
     }
 
-    pub async fn request_login(&self, login_data: &LoginData) -> Result<Response, Error> {
-        self.post(account::get_login_url(&self.agent))
-            .headers(account::get_auth_header(
-                &self.agent,
-                &login_data.to_xvc_key(AUTH_USER_AGENT),
-            ))
-            .form(login_data)
-            .send()
-            .await
-    }
-
-    pub async fn request_passcode(&self, login_data: &LoginData) -> Result<Response, Error> {
-        self.post(account::get_request_passcode_url(&self.agent))
-            .headers(account::get_auth_header(
-                &self.agent,
-                &login_data.to_xvc_key(AUTH_USER_AGENT),
-            ))
-            .form(login_data)
-            .send()
-            .await
-    }
-
-    pub async fn register_device(&self, device_register_data: &DeviceRegisterData) -> Result<Response, Error> {
-        self.post(account::get_register_device_url(&self.agent))
-            .headers(account::get_auth_header(&self.agent, &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
-            .form(device_register_data)
-            .send()
-            .await
+    pub fn new_request(self) -> Request {
+        return Request::new(self);
     }
 }
