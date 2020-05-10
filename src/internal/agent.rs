@@ -30,3 +30,12 @@ impl Os {
         }
     }
 }
+
+impl serde::Serialize for Os {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
