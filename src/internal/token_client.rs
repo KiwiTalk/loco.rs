@@ -1,13 +1,15 @@
-use crate::internal::{account, agent::Os, LoginData, DeviceRegisterData, AUTH_USER_AGENT};
-use reqwest::{Error, Response};
 use std::ops::Deref;
 
-pub struct Client {
+use reqwest::{Error, Response};
+
+use crate::internal::{account, agent::Os, AUTH_USER_AGENT, DeviceRegisterData, LoginData};
+
+pub struct TokenClient {
     client: reqwest::Client,
     agent: Os,
 }
 
-impl Deref for Client {
+impl Deref for TokenClient {
     type Target = reqwest::Client;
 
     fn deref(&self) -> &Self::Target {
@@ -15,9 +17,9 @@ impl Deref for Client {
     }
 }
 
-impl Client {
+impl TokenClient {
     pub fn new(agent: Os) -> Self {
-        return Client {
+        return TokenClient {
             client: Default::default(),
             agent,
         };

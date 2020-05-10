@@ -1,3 +1,10 @@
+pub use attachment::AttachmentType;
+pub use device_register_data::DeviceRegisterData;
+pub use language::Language;
+pub use login_data::LoginData;
+pub use token_client::TokenClient;
+pub use xvc_key::XVCKey;
+
 pub mod key;
 pub mod emoticon;
 pub mod account;
@@ -5,17 +12,10 @@ pub mod account;
 mod language;
 mod attachment;
 mod xvc_key;
-mod client;
+mod token_client;
 mod login_data;
 mod device_register_data;
 pub mod agent;
-
-pub use attachment::AttachmentType;
-pub use language::Language;
-pub use xvc_key::XVCKey;
-pub use client::Client;
-pub use login_data::LoginData;
-pub use device_register_data::DeviceRegisterData;
 
 /*** macros ***/
 #[macro_export]
