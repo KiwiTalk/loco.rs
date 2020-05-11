@@ -1,8 +1,10 @@
 use std::ops::Deref;
 
 use reqwest::{Error, Response};
+use serde_json;
 
 use crate::internal::{account, agent::Os, AUTH_USER_AGENT, DeviceRegisterData, LoginData};
+use crate::types::structs::login::LoginAccessData;
 
 pub struct TokenClient {
     client: reqwest::Client,
@@ -25,15 +27,22 @@ impl TokenClient {
         };
     }
 
-    pub async fn request_login(&self, login_data: &LoginData) -> Result<Response, Error> {
-        self.post(account::get_login_url(&self.agent))
+    pub async fn request_login(&self, login_data: &LoginData) -> Result<LoginAccessData, Error> {
+        let result: Result<Response, Error> = self.post(account::get_login_url(&self.agent))
             .headers(account::get_auth_header(
                 &self.agent,
                 &login_data.to_xvc_key(AUTH_USER_AGENT),
             ))
             .form(login_data)
             .send()
-            .await
+            .await;
+
+        return match result {
+            Ok(response) => {
+                Ok(serde_json::from_str(&response.text().await.unwrap()).unwrap())
+            },
+            Err(error) => Err(error),
+        }
     }
 
     pub async fn request_passcode(&self, login_data: &LoginData) -> Result<Response, Error> {
