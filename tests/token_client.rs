@@ -18,8 +18,8 @@ pub fn get_device_register_data() -> DeviceRegisterData {
 #[tokio::test]
 async fn login() {
     let result = TokenClient::new(Os::Win32).request_login(&get_device_register_data()).await;
-    let text = result.unwrap();
-    println!("{}", text.text().await.unwrap());
+    let data = result.unwrap();
+    println!("{}", data.status);
 }
 
 #[tokio::test]
