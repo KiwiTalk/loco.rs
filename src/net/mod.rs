@@ -1,11 +1,9 @@
 use crate::packet::*;
 use tokio_util::codec::{Decoder, Encoder};
 use bson::{to_bson, encode_document};
-use bytes::{BytesMut, BufMut, buf::ext::BufMutExt};
+use bytes::{BytesMut, buf::*};
 
-pub struct LocoCodec {
-    packet_id: u32,
-}
+pub struct LocoCodec;
 
 pub enum EncodeError {
     Io(std::io::Error),
@@ -24,16 +22,31 @@ impl From<bson::EncoderError> for EncodeError {
     }
 }
 
-impl Encoder<LocoRequest> for LocoCodec {
+impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
     type Error = EncodeError;
-    fn encode(&mut self, item: LocoRequest, dst: &mut BytesMut) -> Result<(), Self::Error> {
-        todo!()
+    fn encode(&mut self, item: LocoPacket<LocoRequest>, dst: &mut BytesMut) -> Result<(), Self::Error> {
+        let body_buf = BytesMut::new();
+        let mut writer = body_buf.writer();
+        encode_document(&mut writer, to_bson(&item.kind)?.as_document().expect("Invalid serialization"))?;
+        let body_buf = writer.into_inner();
+        dst.reserve(22 + body_buf.len());
+        dst.put_u32_le(item.packet_id);
+        dst.put_u16_le(item.status_code);
+        let pad = 10 - item.kind.discriminant().len();
+        dst.put_slice(item.kind.discriminant());
+        dst.put_slice(&[0, 0, 0, 0, 0, 0, 0, 0, 0, 0][..pad]);
+        dst.put_u8(item.body_type);
+        dst.put_u32_le(body_buf.len() as u32);
+        dst.put(body_buf);
+        Ok(())
     }
 }
 
 pub enum DecodeError {
     Io(std::io::Error),
     Bson(bson::DecoderError),
+    UnknownFormat,
+    InvalidDiscriminant(Box<[u8]>),
 }
 
 impl From<std::io::Error> for DecodeError {
@@ -48,10 +61,49 @@ impl From<bson::DecoderError> for DecodeError {
     }
 }
 
+impl From<crate::packet::DecodeError<'_>> for DecodeError {
+    fn from(inner: crate::packet::DecodeError) -> Self {
+        match inner {
+            crate::packet::DecodeError::Bson(bson) => Self::Bson(bson),
+            crate::packet::DecodeError::InvalidDiscriminant(discriminant) => Self::InvalidDiscriminant(discriminant.into()),
+        }
+    }
+}
+
 impl Decoder for LocoCodec {
-    type Item = LocoResponse;
+    type Item = LocoPacket<LocoResponse>;
     type Error = DecodeError;
     fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
-        todo!()
+        if src.len() < 22 {
+            src.reserve(22);
+            return Ok(None)
+        }
+        // unwrap is safe because src.len() >= 22
+        let mut body_len_buf = src.get(18..22).unwrap();
+        let body_len = body_len_buf.get_u32_le() as usize;
+        if src.len() < 22 + body_len {
+            src.reserve(body_len);
+            return Ok(None)
+        }
+        let packet_id = src.get_u32_le();
+        let status_code = src.get_u16_le();
+        let discriminant = match src.get(..10) {
+            Some(bytes) => {
+                let null = bytes.iter().position(|b| *b == 0).unwrap_or(10);
+                Box::from(&bytes[..null])
+            }
+            None => return Err(DecodeError::UnknownFormat)
+        };
+        let body_type = src.get_u8();
+        // body_len is already read
+        src.advance(4);
+        let body_buf = src.get(..body_len).unwrap();
+        let response = LocoResponse::from_bson(&discriminant, body_buf)?;
+        Ok(Some(LocoPacket {
+            packet_id,
+            status_code,
+            body_type,
+            kind: response
+        }))
     }
 }

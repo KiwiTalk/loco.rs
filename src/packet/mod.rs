@@ -2,6 +2,13 @@ mod protocol_info;
 mod get_conf;
 use serde::Serialize;
 
+pub struct LocoPacket<T> {
+    pub packet_id: u32,
+    pub status_code: u16,
+    pub body_type: u8,
+    pub kind: T,
+}
+
 #[derive(Serialize)]
 #[serde(untagged)]
 pub enum LocoRequest {
@@ -9,11 +16,11 @@ pub enum LocoRequest {
 }
 
 impl LocoRequest {
-    fn discriminant(&self) -> &'static str {
+    pub fn discriminant(&self) -> &[u8] {
         use LocoRequest::*;
 
         match self {
-            GetConfig(_) => "GETCONF",
+            GetConfig(_) => b"GETCONF",
         }
     }
 }
@@ -25,9 +32,9 @@ pub enum LocoResponse {
     Config(get_conf::Config),
 }
 
-pub enum DecodeError<'a> {
+pub(crate) enum DecodeError<'a> {
     Bson(bson::DecoderError),
-    InvalidDiscriminant(&'a str),
+    InvalidDiscriminant(&'a [u8]),
 }
 
 impl From<bson::DecoderError> for DecodeError<'_> {
@@ -37,10 +44,10 @@ impl From<bson::DecoderError> for DecodeError<'_> {
 }
 
 impl LocoResponse {
-    pub(crate) fn from_bson<'a>(discriminant: &'a str, buffer: &mut bytes::BytesMut) -> Result<Self, DecodeError<'a>> {
+    pub(crate) fn from_bson<'a>(discriminant: &'a [u8], buffer: &[u8]) -> Result<Self, DecodeError<'a>> {
         let mut reader = buffer.reader();
         match discriminant {
-            "GETCONF" => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
+            b"GETCONF" => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
             _ => Err(DecodeError::InvalidDiscriminant(discriminant))
         }
     }
