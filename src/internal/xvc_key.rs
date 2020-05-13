@@ -6,8 +6,8 @@ pub struct XVCKey {
 }
 
 impl XVCKey {
-    pub fn new(header: &str, email: &str, device_uuid: &str) -> XVCKey{
-        return XVCKey {
+    pub fn new(header: &str, email: &str, device_uuid: &str) -> Self {
+        XVCKey {
             key: hex::encode(
                 Sha512::digest(format!("HEATH|{}|DEMIAN|{}|{}", header, email, device_uuid).as_bytes())
             )
@@ -19,6 +19,6 @@ impl Deref for XVCKey {
     type Target = String;
 
     fn deref(&self) -> &Self::Target {
-        return &self.key;
+        &self.key
     }
 }

@@ -14,7 +14,7 @@ pub struct Feed {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum FeedType {
-    Undefined = -999999,
+    Undefined = -999_999,
     LocalLeave = -1,
     Invite = 1,
     Leave = 2,

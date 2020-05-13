@@ -151,6 +151,7 @@ pub mod resource {
 pub mod fragment {
     use serde::{Deserialize, Serialize};
 
+    #[allow(dead_code)]
     pub struct Fragment {
         kind: FragmentKind,
     }

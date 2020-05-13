@@ -2,7 +2,6 @@ use std::ops::Deref;
 
 use reqwest::blocking::Response;
 use reqwest::Error;
-use serde_json;
 
 use crate::internal::{account, agent::Os, AUTH_USER_AGENT, DeviceRegisterData, LoginData};
 use crate::types::structs::login::LoginAccessData;
@@ -16,16 +15,16 @@ impl Deref for TokenClient {
     type Target = reqwest::blocking::Client;
 
     fn deref(&self) -> &Self::Target {
-        return &self.client;
+        &self.client
     }
 }
 
 impl TokenClient {
     pub fn new(agent: Os) -> Self {
-        return TokenClient {
+        TokenClient {
             client: Default::default(),
             agent,
-        };
+        }
     }
 
     pub fn request_login(&self, login_data: &LoginData) -> Result<LoginAccessData, Error> {
@@ -37,7 +36,7 @@ impl TokenClient {
             .form(login_data)
             .send();
 
-        return match result {
+        match result {
             Ok(response) => {
                 Ok(serde_json::from_str(&response.text().unwrap()).unwrap())
             },

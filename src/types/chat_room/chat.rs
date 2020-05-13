@@ -67,7 +67,7 @@ impl Chat {
     }
 
     pub fn is_mentioned(&self, user_id: UserId) -> bool {
-        self.get_mentions(user_id).len() >= 1
+        !self.get_mentions(user_id).is_empty()
     }
 }
 

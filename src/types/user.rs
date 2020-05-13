@@ -4,7 +4,7 @@ pub type UserId = u64;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum UserType {
-    Undefined = -999999,
+    Undefined = -999_999,
     NotFriend = -100,
     Deactivated = 9,
     Friend = 100,

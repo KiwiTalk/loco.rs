@@ -15,8 +15,8 @@ pub struct LoginData {
 }
 
 impl LoginData {
-    pub fn new(email: String, password: String, device_uuid: &str, device_name: String, os_version: String, permanent: bool, forced: bool) -> LoginData {
-        return LoginData {
+    pub fn new(email: String, password: String, device_uuid: &str, device_name: String, os_version: String, permanent: bool, forced: bool) -> Self {
+        LoginData {
             email,
             password,
             device_uuid: BASE64.encode(device_uuid.as_bytes()),
@@ -24,7 +24,7 @@ impl LoginData {
             os_version,
             permanent,
             forced,
-        };
+        }
     }
 
     pub fn to_xvc_key(&self, auth_user_agent: &str) -> XVCKey {

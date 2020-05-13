@@ -19,7 +19,7 @@ pub fn get_auth_header(agent: &Os, xvc_key: &XVCKey) -> HeaderMap<HeaderValue> {
     header_map.append("X-VC", HeaderValue::from_str(&xvc_key[0..16]).expect("Invalid value for header X-VC"));
     header_map.append(header::USER_AGENT, HeaderValue::from_static(AUTH_USER_AGENT));
     header_map.append(header::ACCEPT_LANGUAGE, HeaderValue::from_static(LANGUAGE));
-    return header_map;
+    header_map
 }
 
 pub fn get_login_url(os: &Os) -> Url {
