@@ -1,24 +1,14 @@
 // Maps to ChatInfoStruct
-pub struct ChatInfo {
-
-}
+pub struct ChatInfo {}
 
 // Maps to ChatMetaStruct
-pub struct ChatMeta {
-
-}
+pub struct ChatMeta {}
 
 // Maps to ChatDataStruct
-pub struct ChatData {
-
-}
+pub struct ChatData {}
 
 // Maps to ChatDataMetaStruct
-pub struct ChatDataMeta {
-
-}
+pub struct ChatDataMeta {}
 
 // Maps to ChatLogStruct
-pub struct ChatLog {
-
-}
+pub struct ChatLog {}

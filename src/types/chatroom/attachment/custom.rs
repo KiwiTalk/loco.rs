@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CustomType {
@@ -100,7 +100,7 @@ pub struct ProfileFragment {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CustomContent { }
+pub struct CustomContent {}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CustomFeedContent {
@@ -201,8 +201,8 @@ pub struct CustomAttachment {
 
 impl<'de> Deserialize<'de> for ButtonFragment {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::de::Deserializer<'de>
+        where
+            D: serde::de::Deserializer<'de>
     {
         #[derive(Deserialize)]
         struct ButtonFragmentRaw {
@@ -231,8 +231,8 @@ impl<'de> Deserialize<'de> for ButtonFragment {
 
 impl Serialize for ButtonFragment {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
+        where
+            S: serde::ser::Serializer,
     {
         #[derive(Serialize)]
         struct ButtonFragmentRaw<'a> {
@@ -257,7 +257,7 @@ impl Serialize for ButtonFragment {
 
         let raw = ButtonFragmentRaw {
             inner,
-            link: &self.link
+            link: &self.link,
         };
 
         raw.serialize(serializer)

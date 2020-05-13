@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
-use reqwest::Error;
 use reqwest::blocking::Response;
+use reqwest::Error;
 use serde_json;
 
 use crate::internal::{account, agent::Os, AUTH_USER_AGENT, DeviceRegisterData, LoginData};

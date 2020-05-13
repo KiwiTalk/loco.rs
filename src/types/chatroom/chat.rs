@@ -1,14 +1,6 @@
-mod attachment;
-mod feed;
+use serde::{Deserialize, Serialize};
 
-use serde::{Serialize, Deserialize};
-pub use super::user::{User, UserId};
-pub use super::channel::Channel;
-pub use attachment::*;
-pub use feed::*;
-
-pub type LogId = u64;
-pub type Timestamp = u64;
+use crate::types::{Channel, ChatAttachment, LogId, Timestamp, User, UserId};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ChatType {
@@ -55,21 +47,22 @@ pub struct Mention {
 
 pub struct Chat {
     pub kind: ChatKind,
-    pub prev_log_id: i64,
-    pub log_id: i64,
+    pub log_id: LogId,
+    pub prev_log_id: LogId,
     pub channel: Channel,
     pub sender: User,
     pub counter: i32,
-    pub text_content: String,
+    pub text: String,
     pub attachments: Vec<ChatAttachment>,
     pub mentions: Vec<Mention>,
-    pub sent_at: i32,
+    pub send_at: Timestamp,
 }
 
 impl Chat {
     pub fn get_mentions(&self, user_id: UserId) -> Vec<&Mention> {
-        self.mentions.iter()
-            .filter(|mention| { mention.user_id == user_id })
+        self.mentions
+            .iter()
+            .filter(|mention| mention.user_id == user_id)
             .collect()
     }
 
@@ -93,56 +86,34 @@ pub enum ChatKind {
 }
 
 #[derive(Debug, Clone)]
-pub struct FeedChat {
-
-}
+pub struct FeedChat {}
 
 #[derive(Debug, Clone)]
-pub struct TextChat {
-
-}
+pub struct TextChat {}
 
 #[derive(Debug, Clone)]
-pub struct LongTextChat {
-
-}
+pub struct LongTextChat {}
 
 #[derive(Debug, Clone)]
-pub struct PhotoChat {
-
-}
+pub struct PhotoChat {}
 
 #[derive(Debug, Clone)]
-pub struct MultiPhotoChat {
-
-}
+pub struct MultiPhotoChat {}
 
 #[derive(Debug, Clone)]
-pub struct StaticEmoticonChat {
-
-}
+pub struct StaticEmoticonChat {}
 
 #[derive(Debug, Clone)]
-pub struct AnimatedEmoticonChat {
-
-}
+pub struct AnimatedEmoticonChat {}
 
 #[derive(Debug, Clone)]
-pub struct VideoChat {
-
-}
+pub struct VideoChat {}
 
 #[derive(Debug, Clone)]
-pub struct SharpSearchChat {
-
-}
+pub struct SharpSearchChat {}
 
 #[derive(Debug, Clone)]
-pub struct ReplyChat {
-
-}
+pub struct ReplyChat {}
 
 #[derive(Debug, Clone)]
-pub struct KakaoLinkV2Chat {
-
-}
+pub struct KakaoLinkV2Chat {}

@@ -1,6 +1,7 @@
-use crate::internal::XVCKey;
-use serde::{Serialize, Deserialize};
 use data_encoding::BASE64;
+use serde::{Deserialize, Serialize};
+
+use crate::internal::XVCKey;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct LoginData {

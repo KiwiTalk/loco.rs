@@ -1,14 +1,14 @@
-use serde::{Serialize, Deserialize};
-use super::super::{ChatType, Mention, LogId, super::user::UserId};
+use serde::{Deserialize, Serialize};
+
+use crate::types::{ChatType, LogId, Mention, UserId};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LongTextAttachment {
-    #[serde(rename = "path")]
-    text_path: String,
     #[serde(rename = "k")]
     key_path: String,
+    path: String,
     #[serde(rename = "s", alias = "size")]
-    text_size: Option<usize>,
+    length: Option<usize>,
     #[serde(rename = "sd")]
     sd: Option<bool>, // TODO: what is `sd`?
 }
