@@ -13,6 +13,7 @@ pub struct LocoPacket<T> {
 #[serde(untagged)]
 pub enum LocoRequest {
     GetConfig(get_conf::GetConfig),
+    Ping,
 }
 
 impl LocoRequest {
@@ -21,6 +22,7 @@ impl LocoRequest {
 
         match self {
             GetConfig(_) => b"GETCONF",
+            Ping => b"PING",
         }
     }
 }
@@ -30,6 +32,7 @@ use bytes::buf::BufExt;
 
 pub enum LocoResponse {
     Config(get_conf::Config),
+    Ping,
 }
 
 pub(crate) enum DecodeError<'a> {
@@ -48,6 +51,7 @@ impl LocoResponse {
         let mut reader = buffer.reader();
         match discriminant {
             b"GETCONF" => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
+            b"PING" => Ok(Self::Ping),
             _ => Err(DecodeError::InvalidDiscriminant(discriminant))
         }
     }
