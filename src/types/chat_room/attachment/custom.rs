@@ -201,8 +201,8 @@ pub struct CustomAttachment {
 
 impl<'de> Deserialize<'de> for ButtonFragment {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: serde::de::Deserializer<'de>
+    where
+        D: serde::de::Deserializer<'de>,
     {
         #[derive(Deserialize)]
         struct ButtonFragmentRaw {
@@ -231,8 +231,8 @@ impl<'de> Deserialize<'de> for ButtonFragment {
 
 impl Serialize for ButtonFragment {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: serde::ser::Serializer,
+    where
+        S: serde::ser::Serializer,
     {
         #[derive(Serialize)]
         struct ButtonFragmentRaw<'a> {

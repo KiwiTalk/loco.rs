@@ -35,4 +35,3 @@ async fn request_passcode() {
     let text = result.unwrap();
     println!("{}", text.text().unwrap());
 }
-

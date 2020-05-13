@@ -1,5 +1,5 @@
 use crate::internal::LoginData;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]

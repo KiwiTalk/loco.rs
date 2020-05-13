@@ -1,5 +1,5 @@
-mod protocol_info;
 mod get_conf;
+mod protocol_info;
 use serde::Serialize;
 
 pub struct LocoPacket<T> {
@@ -47,12 +47,19 @@ impl From<bson::DecoderError> for DecodeError<'_> {
 }
 
 impl LocoResponse {
-    pub(crate) fn from_bson<'a>(discriminant: &'a [u8], buffer: &[u8]) -> Result<Self, DecodeError<'a>> {
+    pub(crate) fn from_bson<'a>(
+        discriminant: &'a [u8],
+        buffer: &[u8],
+    ) -> Result<Self, DecodeError<'a>> {
         let mut reader = buffer.reader();
         match discriminant {
-            b"GETCONF" => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
+            b"GETCONF" => decode_document(&mut reader)
+                .map(Into::into)
+                .and_then(from_bson)
+                .map(Self::Config)
+                .map_err(Into::into),
             b"PING" => Ok(Self::Ping),
-            _ => Err(DecodeError::InvalidDiscriminant(discriminant))
+            _ => Err(DecodeError::InvalidDiscriminant(discriminant)),
         }
     }
 }

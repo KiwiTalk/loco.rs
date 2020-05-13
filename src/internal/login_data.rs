@@ -15,7 +15,15 @@ pub struct LoginData {
 }
 
 impl LoginData {
-    pub fn new(email: String, password: String, device_uuid: &str, device_name: String, os_version: String, permanent: bool, forced: bool) -> Self {
+    pub fn new(
+        email: String,
+        password: String,
+        device_uuid: &str,
+        device_name: String,
+        os_version: String,
+        permanent: bool,
+        forced: bool,
+    ) -> Self {
         LoginData {
             email,
             password,
@@ -28,6 +36,10 @@ impl LoginData {
     }
 
     pub fn to_xvc_key(&self, auth_user_agent: &str) -> XVCKey {
-        XVCKey::new(auth_user_agent, self.email.as_ref(), self.device_uuid.as_ref())
+        XVCKey::new(
+            auth_user_agent,
+            self.email.as_ref(),
+            self.device_uuid.as_ref(),
+        )
     }
 }

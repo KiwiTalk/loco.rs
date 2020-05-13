@@ -1,10 +1,15 @@
-use reqwest::Url;
 use crate::internal::Language;
+use reqwest::Url;
 
 pub fn get_url(lang: &Language) -> Url {
     Url::parse(
-        format!("http://item-{lang}.talk.kakao.co.kr", lang = lang.to_string()).as_ref()
-    ).expect("Illegal url specified")
+        format!(
+            "http://item-{lang}.talk.kakao.co.kr",
+            lang = lang.to_string()
+        )
+        .as_ref(),
+    )
+    .expect("Illegal url specified")
 }
 
 pub fn get_image_url(path: &str, lang: &Language) -> Url {

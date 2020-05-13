@@ -1,6 +1,6 @@
 use super::LocoRequest;
 use crate::internal::agent::Os;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 pub struct GetConfig {
@@ -25,7 +25,7 @@ pub struct Config {
 impl<'de> Deserialize<'de> for Config {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>
+        D: serde::Deserializer<'de>,
     {
         #[derive(Deserialize)]
         struct Ticket {
