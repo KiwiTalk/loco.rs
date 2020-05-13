@@ -2,7 +2,7 @@ use crate::packet::DecodeError;
 
 pub enum ProtocolInfo {
     GetConfig,
-    BuyCS, // TODO: What is CS?
+    BuyChatSticker,
     NetworkTest,
     CheckIn,
     Down,
@@ -138,7 +138,7 @@ impl ProtocolInfo {
     pub fn from_bytes(discriminant: &[u8]) -> Result<Self, DecodeError> {
         match discriminant {
             b"GETCONF" => Ok(ProtocolInfo::GetConfig),
-            b"BUYCS" => Ok(ProtocolInfo::BuyCS),
+            b"BUYCS" => Ok(ProtocolInfo::BuyChatSticker),
             b"NETTEST" => Ok(ProtocolInfo::NetworkTest),
             b"CHECKIN" => Ok(ProtocolInfo::CheckIn),
             b"DOWN" => Ok(ProtocolInfo::Down),
@@ -273,7 +273,7 @@ impl ProtocolInfo {
     pub fn as_bytes(&self) -> &'static [u8] {
         match self {
             ProtocolInfo::GetConfig => b"GETCONF",
-            ProtocolInfo::BuyCS => b"BUYCS",
+            ProtocolInfo::BuyChatSticker => b"BUYCS",
             ProtocolInfo::NetworkTest => b"NETTEST",
             ProtocolInfo::CheckIn => b"CHECKIN",
             ProtocolInfo::Down => b"DOWN",

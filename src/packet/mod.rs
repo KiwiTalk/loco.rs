@@ -54,7 +54,7 @@ impl LocoResponse {
         match ProtocolInfo::from_bytes(discriminant) {
             Ok(protocol) => match protocol {
                 ProtocolInfo::GetConfig => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
-                ProtocolInfo::BuyCS => {}
+                ProtocolInfo::BuyChatSticker => {}
                 ProtocolInfo::NetworkTest => {}
                 ProtocolInfo::CheckIn => {}
                 ProtocolInfo::Down => {}
