@@ -2,9 +2,8 @@ use std::ops::Deref;
 
 use reqwest::blocking::Response;
 use reqwest::Error;
-use serde_json;
 
-use crate::internal::{account, agent::Os, AUTH_USER_AGENT, DeviceRegisterData, LoginData};
+use crate::internal::{account, agent::Os, DeviceRegisterData, LoginData, AUTH_USER_AGENT};
 use crate::types::structs::login::LoginAccessData;
 
 pub struct TokenClient {
@@ -16,20 +15,21 @@ impl Deref for TokenClient {
     type Target = reqwest::blocking::Client;
 
     fn deref(&self) -> &Self::Target {
-        return &self.client;
+        &self.client
     }
 }
 
 impl TokenClient {
     pub fn new(agent: Os) -> Self {
-        return TokenClient {
+        TokenClient {
             client: Default::default(),
             agent,
-        };
+        }
     }
 
     pub fn request_login(&self, login_data: &LoginData) -> Result<LoginAccessData, Error> {
-        let result: Result<Response, Error> = self.post(account::get_login_url(&self.agent))
+        let result: Result<Response, Error> = self
+            .post(account::get_login_url(&self.agent))
             .headers(account::get_auth_header(
                 &self.agent,
                 &login_data.to_xvc_key(AUTH_USER_AGENT),
@@ -37,10 +37,8 @@ impl TokenClient {
             .form(login_data)
             .send();
 
-        return match result {
-            Ok(response) => {
-                Ok(serde_json::from_str(&response.text().unwrap()).unwrap())
-            },
+        match result {
+            Ok(response) => Ok(serde_json::from_str(&response.text().unwrap()).unwrap()),
             Err(error) => Err(error),
         }
     }
@@ -55,9 +53,15 @@ impl TokenClient {
             .send()
     }
 
-    pub fn register_device(&self, device_register_data: &DeviceRegisterData) -> Result<Response, Error> {
+    pub fn register_device(
+        &self,
+        device_register_data: &DeviceRegisterData,
+    ) -> Result<Response, Error> {
         self.post(account::get_register_device_url(&self.agent))
-            .headers(account::get_auth_header(&self.agent, &device_register_data.to_xvc_key(AUTH_USER_AGENT)))
+            .headers(account::get_auth_header(
+                &self.agent,
+                &device_register_data.to_xvc_key(AUTH_USER_AGENT),
+            ))
             .form(device_register_data)
             .send()
     }

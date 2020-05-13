@@ -1,7 +1,7 @@
 use crate::packet::*;
+use bson::{encode_document, to_bson};
+use bytes::{buf::*, BytesMut};
 use tokio_util::codec::{Decoder, Encoder};
-use bson::{to_bson, encode_document};
-use bytes::{BytesMut, buf::*};
 
 pub struct LocoCodec;
 
@@ -24,10 +24,19 @@ impl From<bson::EncoderError> for EncodeError {
 
 impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
     type Error = EncodeError;
-    fn encode(&mut self, item: LocoPacket<LocoRequest>, dst: &mut BytesMut) -> Result<(), Self::Error> {
+    fn encode(
+        &mut self,
+        item: LocoPacket<LocoRequest>,
+        dst: &mut BytesMut,
+    ) -> Result<(), Self::Error> {
         let body_buf = BytesMut::new();
         let mut writer = body_buf.writer();
-        encode_document(&mut writer, to_bson(&item.kind)?.as_document().expect("Invalid serialization"))?;
+        encode_document(
+            &mut writer,
+            to_bson(&item.kind)?
+                .as_document()
+                .expect("Invalid serialization"),
+        )?;
         let body_buf = writer.into_inner();
         dst.reserve(22 + body_buf.len());
         dst.put_u32_le(item.packet_id);
@@ -65,7 +74,9 @@ impl From<crate::packet::DecodeError<'_>> for DecodeError {
     fn from(inner: crate::packet::DecodeError) -> Self {
         match inner {
             crate::packet::DecodeError::Bson(bson) => Self::Bson(bson),
-            crate::packet::DecodeError::InvalidDiscriminant(discriminant) => Self::InvalidDiscriminant(discriminant.into()),
+            crate::packet::DecodeError::InvalidDiscriminant(discriminant) => {
+                Self::InvalidDiscriminant(discriminant.into())
+            }
         }
     }
 }
@@ -76,14 +87,14 @@ impl Decoder for LocoCodec {
     fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
         if src.len() < 22 {
             src.reserve(22);
-            return Ok(None)
+            return Ok(None);
         }
         // unwrap is safe because src.len() >= 22
         let mut body_len_buf = src.get(18..22).unwrap();
         let body_len = body_len_buf.get_u32_le() as usize;
         if src.len() < 22 + body_len {
             src.reserve(body_len);
-            return Ok(None)
+            return Ok(None);
         }
         let packet_id = src.get_u32_le();
         let status_code = src.get_u16_le();
@@ -92,7 +103,7 @@ impl Decoder for LocoCodec {
                 let null = bytes.iter().position(|b| *b == 0).unwrap_or(10);
                 Box::from(&bytes[..null])
             }
-            None => return Err(DecodeError::UnknownFormat)
+            None => return Err(DecodeError::UnknownFormat),
         };
         let body_type = src.get_u8();
         // body_len is already read
@@ -103,7 +114,7 @@ impl Decoder for LocoCodec {
             packet_id,
             status_code,
             body_type,
-            kind: response
+            kind: response,
         }))
     }
 }
