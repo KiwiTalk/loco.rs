@@ -1,12 +1,14 @@
+pub use custom::*;
 pub use emoticon::*;
 pub use file::*;
 pub use sharp::*;
 pub use text::*;
 
-mod emoticon;
-mod file;
-mod sharp;
-mod text;
+pub mod custom;
+pub mod emoticon;
+pub mod file;
+pub mod sharp;
+pub mod text;
 
 pub enum ChatAttachment {
     Emoticon(EmoticonAttachment),

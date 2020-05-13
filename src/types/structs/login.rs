@@ -1,19 +1,21 @@
+use serde::{Deserialize, Serialize};
+
 // Maps to LoginAccessDataStruct
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LoginAccessData {
-    status: i32,
-    story_url: String,
-    user_id: i32,
-    country_iso: String,
-    country_code: String,
-    account_id: i32,
-    server_time: i32,
-    reset_user_data: bool,
-    access_token: String,
-    refresh_token: String,
-    token_type: String,
-    auto_login_id: String,
-    display_id: String,
-    main_device: String,
-    main_device_app_version: String,
+    pub status: i32,
+    pub story_url: Option<String>,
+    pub user_id: Option<i32>,
+    pub country_iso: Option<String>,
+    pub country_code: Option<String>,
+    pub account_id: Option<i32>,
+    pub server_time: Option<i32>,
+    pub reset_user_data: Option<bool>,
+    pub access_token: Option<String>,
+    pub refresh_token: Option<String>,
+    pub token_type: Option<String>,
+    pub auto_login_id: Option<String>,
+    pub display_id: Option<String>,
+    pub main_device: Option<String>,
+    pub main_device_app_version: Option<String>,
 }

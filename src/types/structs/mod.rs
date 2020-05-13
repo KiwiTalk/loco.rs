@@ -4,9 +4,9 @@ pub use login::*;
 pub use open_link::*;
 pub use settings::*;
 
-mod channel;
-mod chat;
-mod login;
-mod open_link;
-mod settings;
+pub mod channel;
+pub mod chat;
+pub mod login;
+pub mod open_link;
+pub mod settings;
 
