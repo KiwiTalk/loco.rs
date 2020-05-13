@@ -1,6 +1,8 @@
-use crate::internal::{XVCKey, LoginData};
-use serde::{Serialize, Deserialize};
 use std::ops::Deref;
+
+use serde::{Deserialize, Serialize};
+
+use crate::internal::LoginData;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct DeviceRegisterData {

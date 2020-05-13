@@ -1,6 +1,11 @@
+use bson::{decode_document, from_bson};
+use bytes::buf::BufExt;
+use serde::Serialize;
+
+use crate::packet::protocol_info::ProtocolInfo;
+
 mod protocol_info;
 mod get_conf;
-use serde::Serialize;
 
 pub struct LocoPacket<T> {
     pub packet_id: u32,
@@ -21,14 +26,11 @@ impl LocoRequest {
         use LocoRequest::*;
 
         match self {
-            GetConfig(_) => b"GETCONF",
-            Ping => b"PING",
+            GetConfig(_) => ProtocolInfo::GetConfig.as_bytes(),
+            Ping => ProtocolInfo::Ping.as_bytes(),
         }
     }
 }
-
-use bson::{decode_document, from_bson};
-use bytes::buf::BufExt;
 
 pub enum LocoResponse {
     Config(get_conf::Config),
@@ -49,10 +51,139 @@ impl From<bson::DecoderError> for DecodeError<'_> {
 impl LocoResponse {
     pub(crate) fn from_bson<'a>(discriminant: &'a [u8], buffer: &[u8]) -> Result<Self, DecodeError<'a>> {
         let mut reader = buffer.reader();
-        match discriminant {
-            b"GETCONF" => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
-            b"PING" => Ok(Self::Ping),
-            _ => Err(DecodeError::InvalidDiscriminant(discriminant))
+        match ProtocolInfo::from_bytes(discriminant) {
+            Ok(protocol) => match protocol {
+                ProtocolInfo::GetConfig => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
+                ProtocolInfo::BuyCS => {}
+                ProtocolInfo::NetworkTest => {}
+                ProtocolInfo::CheckIn => {}
+                ProtocolInfo::Down => {}
+                ProtocolInfo::Mini => {}
+                ProtocolInfo::Complete => {}
+                ProtocolInfo::Post => {}
+                ProtocolInfo::SPost => {}
+                ProtocolInfo::MPost => {}
+                ProtocolInfo::AddMember => {}
+                ProtocolInfo::NewMember => {}
+                ProtocolInfo::Leave => {}
+                ProtocolInfo::DeleteMember => {}
+                ProtocolInfo::Left => {}
+                ProtocolInfo::BlockSync => {}
+                ProtocolInfo::BlockAddItem => {}
+                ProtocolInfo::BlockDeleteItem => {}
+                ProtocolInfo::BlockSpam => {}
+                ProtocolInfo::BlockSpams => {}
+                ProtocolInfo::BlockMember => {}
+                ProtocolInfo::Ship => {}
+                ProtocolInfo::MShip => {}
+                ProtocolInfo::GetTrailer => {}
+                ProtocolInfo::Invoice => {}
+                ProtocolInfo::MInvoice => {}
+                ProtocolInfo::MCheckTokens => {}
+                ProtocolInfo::Create => {}
+                ProtocolInfo::PCreate => {}
+                ProtocolInfo::ChatInfo => {}
+                ProtocolInfo::ChatOff => {}
+                ProtocolInfo::ChatOnRoom => {}
+                ProtocolInfo::GetMeta => {}
+                ProtocolInfo::SetMeta => {}
+                ProtocolInfo::ChangeMeta => {}
+                ProtocolInfo::GetMetas => {}
+                ProtocolInfo::GetMCMeta => {}
+                ProtocolInfo::SetMCMeta => {}
+                ProtocolInfo::ChangeMCMeta => {}
+                ProtocolInfo::GetChatST => {}
+                ProtocolInfo::SetChatST => {}
+                ProtocolInfo::ChangeChatST => {}
+                ProtocolInfo::UpdateChat => {}
+                ProtocolInfo::GetMember => {}
+                ProtocolInfo::Member => {}
+                ProtocolInfo::Write => {}
+                ProtocolInfo::Message => {}
+                ProtocolInfo::Forward => {}
+                ProtocolInfo::DecreaseUnread => {}
+                ProtocolInfo::ClearNotification => {}
+                ProtocolInfo::ClearBadge => {}
+                ProtocolInfo::MChatLogs => {}
+                ProtocolInfo::SyncMessage => {}
+                ProtocolInfo::DeleteMessage => {}
+                ProtocolInfo::SyncDeleteMessage => {}
+                ProtocolInfo::SelfDeleteMessage => {}
+                ProtocolInfo::SelfDLAMessage => {}
+                ProtocolInfo::LoginList => {}
+                ProtocolInfo::LoginChatList => {}
+                ProtocolInfo::ChangeServer => {}
+                ProtocolInfo::VOEvent => {}
+                ProtocolInfo::SCreate => {}
+                ProtocolInfo::SWrite => {}
+                ProtocolInfo::SAddMember => {}
+                ProtocolInfo::SetPublicKey => {}
+                ProtocolInfo::SetSecretKey => {}
+                ProtocolInfo::GetPublicKey => {}
+                ProtocolInfo::GetSecretKey => {}
+                ProtocolInfo::GetLdapPublicKey => {}
+                ProtocolInfo::CreateLink => {}
+                ProtocolInfo::DeleteLink => {}
+                ProtocolInfo::JoinLink => {}
+                ProtocolInfo::JoinInfo => {}
+                ProtocolInfo::InfoLink => {}
+                ProtocolInfo::SyncLink => {}
+                ProtocolInfo::UpdateLinkProfile => {}
+                ProtocolInfo::KickLeave => {}
+                ProtocolInfo::UpdateLink => {}
+                ProtocolInfo::RepoLeave => {}
+                ProtocolInfo::SyncMainProfile => {}
+                ProtocolInfo::SyncLinkCR => {}
+                ProtocolInfo::SyncLinkUpdate => {}
+                ProtocolInfo::SyncLinkDownload => {}
+                ProtocolInfo::KickMember => {}
+                ProtocolInfo::ReportMember => {}
+                ProtocolInfo::LinkKicked => {}
+                ProtocolInfo::LinkDeleted => {}
+                ProtocolInfo::SyncLinkProfile => {}
+                ProtocolInfo::Kicked => {}
+                ProtocolInfo::SyncJoin => {}
+                ProtocolInfo::Feed => {}
+                ProtocolInfo::CheckJoin => {}
+                ProtocolInfo::Blind => {}
+                ProtocolInfo::SyncBlind => {}
+                ProtocolInfo::ReportLink => {}
+                ProtocolInfo::KLSync => {}
+                ProtocolInfo::KLDeleteItem => {}
+                ProtocolInfo::React => {}
+                ProtocolInfo::ReactCount => {}
+                ProtocolInfo::SetMemberType => {}
+                ProtocolInfo::SyncMemberType => {}
+                ProtocolInfo::Rewrite => {}
+                ProtocolInfo::SyncRewrite => {}
+                ProtocolInfo::RelayEvent => {}
+                ProtocolInfo::SyncEvent => {}
+                ProtocolInfo::GroupAdd => {}
+                ProtocolInfo::GroupAddSync => {}
+                ProtocolInfo::GroupDelete => {}
+                ProtocolInfo::GroupDeleteSync => {}
+                ProtocolInfo::GroupUpdate => {}
+                ProtocolInfo::GroupUpdateSync => {}
+                ProtocolInfo::GroupAddItem => {}
+                ProtocolInfo::GroupAddItemSync => {}
+                ProtocolInfo::GroupDeleteItem => {}
+                ProtocolInfo::GroupDeleteItemSync => {}
+                ProtocolInfo::GroupDeleteItemAttr => {}
+                ProtocolInfo::GroupDeleteItemAttrSync => {}
+                ProtocolInfo::GroupSetPosition => {}
+                ProtocolInfo::GroupPositionSync => {}
+                ProtocolInfo::GroupList => {}
+                ProtocolInfo::NotificationReceiveSync => {}
+                ProtocolInfo::ChangeMoimMetas => {}
+                ProtocolInfo::GetMoimMeta => {}
+                ProtocolInfo::MoimClick => {}
+                ProtocolInfo::SetST => {}
+                ProtocolInfo::PushAck => {}
+                ProtocolInfo::SPush => {}
+                ProtocolInfo::GetToken => {}
+                ProtocolInfo::Ping => Ok(Self::Ping),
+            },
+            Err(error) => Err(DecodeError::InvalidDiscriminant(discriminant)),
         }
     }
 }

@@ -1,12 +1,8 @@
-use serde::{Serialize, Deserialize};
+use crate::packet::DecodeError;
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "UPPERCASE")]
 pub enum ProtocolInfo {
-    #[serde(rename = "GETCONF")]
     GetConfig,
     BuyCS, // TODO: What is CS?
-    #[serde(rename = "NETTEST")]
     NetworkTest,
     CheckIn,
     Down,
@@ -15,32 +11,22 @@ pub enum ProtocolInfo {
     Post,
     SPost,
     MPost,
-    #[serde(rename = "ADDMEM")]
     AddMember,
-    #[serde(rename = "NEWMEM")]
     NewMember,
     Leave,
-    #[serde(rename = "DELMEM")]
     DeleteMember,
     Left,
-    #[serde(rename = "BLSYNC")]
     BlockSync,
-    #[serde(rename = "BLADDITEM")]
     BlockAddItem,
-    #[serde(rename = "BLDELITEM")]
     BlockDeleteItem,
-    #[serde(rename = "BLSPAM")]
     BlockSpam,
-    #[serde(rename = "BLSPAMS")]
     BlockSpams,
-    #[serde(rename = "BLMEMBER")]
     BlockMember,
     Ship,
     MShip, // TODO: What is M?
     GetTrailer,
     Invoice,
     MInvoice, // TODO: What is M?
-    #[serde(rename = "MCHKTOKENS")]
     MCheckTokens,
     Create,
     PCreate,
@@ -49,61 +35,40 @@ pub enum ProtocolInfo {
     ChatOnRoom,
     GetMeta,
     SetMeta,
-    #[serde(rename = "CHGMETA")]
     ChangeMeta,
     GetMetas,
     GetMCMeta,
     SetMCMeta,
-    #[serde(rename = "CHGMCMETA")]
     ChangeMCMeta,
     GetChatST,
     SetChatST,
-    #[serde(rename = "CHGCHATST")]
     ChangeChatST,
     UpdateChat,
-    #[serde(rename = "GETMEM")]
     GetMember,
     Member,
     Write,
-    #[serde(rename = "MSG")]
     Message,
     Forward,
-    #[serde(rename = "DECUNREAD")]
     DecreaseUnread,
-    #[serde(rename = "CLEARNOTI")]
     ClearNotification,
-    #[serde(rename = "CLRBDG")]
     ClearBadge,
     MChatLogs,
-    #[serde(rename = "SYNCMSG")]
     SyncMessage,
-    #[serde(rename = "DELETEMSG")]
     DeleteMessage,
-    #[serde(rename = "SYNCDLMSG")]
     SyncDeleteMessage,
-    #[serde(rename = "SELFDLMSG")]
     SelfDeleteMessage,
-    #[serde(rename = "SELFDLAMSG")]
     SelfDLAMessage,
     LoginList,
-    #[serde(rename = "LCHATLIST")]
     LoginChatList,
-    #[serde(rename = "CHANGESVR")]
     ChangeServer,
     VOEvent,
     SCreate,
     SWrite,
-    #[serde(rename = "SADDMEM")]
     SAddMember,
-    #[serde(rename = "SETPK")]
     SetPublicKey,
-    #[serde(rename = "SETSK")]
     SetSecretKey,
-    #[serde(rename = "GETPK")]
     GetPublicKey,
-    #[serde(rename = "GETSK")]
     GetSecretKey,
-    #[serde(rename = "GETLPK")]
     GetLdapPublicKey,
     CreateLink,
     DeleteLink,
@@ -111,26 +76,18 @@ pub enum ProtocolInfo {
     JoinInfo,
     InfoLink,
     SyncLink,
-    #[serde(rename = "UPLINKPROF")]
     UpdateLinkProfile,
     KickLeave,
     UpdateLink,
     RepoLeave,
-    #[serde(rename = "SYNCMAINPF")]
     SyncMainProfile,
     SyncLinkCR,
-    #[serde(rename = "SYNCLINKUP")]
     SyncLinkUpdate,
-    #[serde(rename = "SYNCLINKDL")]
     SyncLinkDownload,
-    #[serde(rename = "KICKMEM")]
     KickMember,
-    #[serde(rename = "REPORTMEM")]
     ReportMember,
     LinkKicked,
-    #[serde(rename = "LNKDELETED")]
     LinkDeleted,
-    #[serde(rename = "SYNCMAINPF")]
     SyncLinkProfile,
     Kicked,
     SyncJoin,
@@ -140,60 +97,319 @@ pub enum ProtocolInfo {
     SyncBlind,
     ReportLink,
     KLSync, // TODO: What is KL?
-    #[serde(rename = "KLDELITEM")]
     KLDeleteItem,
     React,
-    #[serde(rename = "REACTCNT")]
     ReactCount,
-    #[serde(rename = "SETMEMTYPE")]
     SetMemberType,
-    #[serde(rename = "SYNCMEMT")]
     SyncMemberType,
     Rewrite,
-    #[serde(rename = "SYNCREWR")]
     SyncRewrite,
     RelayEvent,
     SyncEvent,
-    #[serde(rename = "GRADD")]
     GroupAdd,
-    #[serde(rename = "GRADDSYNC")]
     GroupAddSync,
-    #[serde(rename = "GRDEL")]
     GroupDelete,
-    #[serde(rename = "GRDELSYNC")]
     GroupDeleteSync,
-    #[serde(rename = "GRUPDATE")]
     GroupUpdate,
-    #[serde(rename = "GRUPSYNC")]
     GroupUpdateSync,
-    #[serde(rename = "GRADDITEM")]
     GroupAddItem,
-    #[serde(rename = "GRADDISYNC")]
     GroupAddItemSync,
-    #[serde(rename = "GRDELITEM")]
     GroupDeleteItem,
-    #[serde(rename = "GRDELISYNC")]
     GroupDeleteItemSync,
-    #[serde(rename = "GRDELITEMA")]
     GroupDeleteItemAttr,
-    #[serde(rename = "GRDELIASYN")]
     GroupDeleteItemAttrSync,
-    #[serde(rename = "GRSETPOS")]
     GroupSetPosition,
-    #[serde(rename = "GRPOSSYNC")]
     GroupPositionSync,
-    #[serde(rename = "GRLIST")]
     GroupList,
-    #[serde(rename = "NOTIRCVS")]
     NotificationReceiveSync,
-    #[serde(rename = "CHGMOMETAS")]
     ChangeMoimMetas,
-    #[serde(rename = "GETMOMETA")]
     GetMoimMeta,
-    #[serde(rename = "MOCLICK")]
     MoimClick,
-    SetST, // TODO: What is ST?
+    SetST,
+    // TODO: What is ST?
     PushAck,
-    SPush, // TODO: What is S?
+    SPush,
+    // TODO: What is S?
     GetToken,
+    Ping,
+}
+
+impl ProtocolInfo {
+    pub fn from_bytes(discriminant: &[u8]) -> Result<Self, DecodeError> {
+        match discriminant {
+            b"GETCONF" => Ok(ProtocolInfo::GetConfig),
+            b"BUYCS" => Ok(ProtocolInfo::BuyCS),
+            b"NETTEST" => Ok(ProtocolInfo::NetworkTest),
+            b"CHECKIN" => Ok(ProtocolInfo::CheckIn),
+            b"DOWN" => Ok(ProtocolInfo::Down),
+            b"MINI" => Ok(ProtocolInfo::Mini),
+            b"COMPLETE" => Ok(ProtocolInfo::Complete),
+            b"POST" => Ok(ProtocolInfo::Post),
+            b"SPOST" => Ok(ProtocolInfo::SPost),
+            b"MPOST" => Ok(ProtocolInfo::MPost),
+            b"ADDMEM" => Ok(ProtocolInfo::AddMember),
+            b"NEWMEM" => Ok(ProtocolInfo::NewMember),
+            b"LEAVE" => Ok(ProtocolInfo::Leave),
+            b"DELMEM" => Ok(ProtocolInfo::DeleteMember),
+            b"LEFT" => Ok(ProtocolInfo::Left),
+            b"BLSYNC" => Ok(ProtocolInfo::BlockSync),
+            b"BLADDITEM" => Ok(ProtocolInfo::BlockAddItem),
+            b"BLDELITEM" => Ok(ProtocolInfo::BlockDeleteItem),
+            b"BLSPAM" => Ok(ProtocolInfo::BlockSpam),
+            b"BLSPAMS" => Ok(ProtocolInfo::BlockSpams),
+            b"BLMEMBER" => Ok(ProtocolInfo::BlockMember),
+            b"SHIP" => Ok(ProtocolInfo::Ship),
+            b"MSHIP" => Ok(ProtocolInfo::MShip),
+            b"GETTRAILER" => Ok(ProtocolInfo::GetTrailer),
+            b"INVOICE" => Ok(ProtocolInfo::Invoice),
+            b"MINVOICE" => Ok(ProtocolInfo::MInvoice),
+            b"MCHKTOKENS" => Ok(ProtocolInfo::MCheckTokens),
+            b"CREATE" => Ok(ProtocolInfo::Create),
+            b"PCREATE" => Ok(ProtocolInfo::PCreate),
+            b"CHATINFO" => Ok(ProtocolInfo::ChatInfo),
+            b"CHATOFF" => Ok(ProtocolInfo::ChatOff),
+            b"CHATONROOM" => Ok(ProtocolInfo::ChatOnRoom),
+            b"GETMETA" => Ok(ProtocolInfo::GetMeta),
+            b"SETMETA" => Ok(ProtocolInfo::SetMeta),
+            b"CHGMETA" => Ok(ProtocolInfo::ChangeMeta),
+            b"GETMETAS" => Ok(ProtocolInfo::GetMetas),
+            b"GETMCMETA" => Ok(ProtocolInfo::GetMCMeta),
+            b"SETMCMETA" => Ok(ProtocolInfo::SetMCMeta),
+            b"CHGMCMETA" => Ok(ProtocolInfo::ChangeMCMeta),
+            b"GETCHATST" => Ok(ProtocolInfo::GetChatST),
+            b"SETCHATST" => Ok(ProtocolInfo::SetChatST),
+            b"CHGCHATST" => Ok(ProtocolInfo::ChangeChatST),
+            b"UPDATECHAT" => Ok(ProtocolInfo::UpdateChat),
+            b"GETMEM" => Ok(ProtocolInfo::GetMember),
+            b"MEMBER" => Ok(ProtocolInfo::Member),
+            b"WRITE" => Ok(ProtocolInfo::Write),
+            b"MSG" => Ok(ProtocolInfo::Message),
+            b"FORWARD" => Ok(ProtocolInfo::Forward),
+            b"DECUNREAD" => Ok(ProtocolInfo::DecreaseUnread),
+            b"CLEARNOTI" => Ok(ProtocolInfo::ClearNotification),
+            b"CLRBDG" => Ok(ProtocolInfo::ClearBadge),
+            b"MCHATLOGS" => Ok(ProtocolInfo::MChatLogs),
+            b"SYNCMSG" => Ok(ProtocolInfo::SyncMessage),
+            b"DELETEMSG" => Ok(ProtocolInfo::DeleteMessage),
+            b"SYNCDLMSG" => Ok(ProtocolInfo::SyncDeleteMessage),
+            b"SELFDLMSG" => Ok(ProtocolInfo::SelfDeleteMessage),
+            b"SELFDLAMSG" => Ok(ProtocolInfo::SelfDLAMessage),
+            b"LOGINLIST" => Ok(ProtocolInfo::LoginList),
+            b"LCHATLIST" => Ok(ProtocolInfo::LoginChatList),
+            b"CHANGESVR" => Ok(ProtocolInfo::ChangeServer),
+            b"VOEVENT" => Ok(ProtocolInfo::VOEvent),
+            b"SCREATE" => Ok(ProtocolInfo::SCreate),
+            b"SWRITE" => Ok(ProtocolInfo::SWrite),
+            b"SADDMEM" => Ok(ProtocolInfo::SAddMember),
+            b"SETPK" => Ok(ProtocolInfo::SetPublicKey),
+            b"SETSK" => Ok(ProtocolInfo::SetSecretKey),
+            b"GETPK" => Ok(ProtocolInfo::GetPublicKey),
+            b"GETSK" => Ok(ProtocolInfo::GetSecretKey),
+            b"GETLPK" => Ok(ProtocolInfo::GetLdapPublicKey),
+            b"CREATELINK" => Ok(ProtocolInfo::CreateLink),
+            b"DELETELINK" => Ok(ProtocolInfo::DeleteLink),
+            b"JOINLINK" => Ok(ProtocolInfo::JoinLink),
+            b"JOININFO" => Ok(ProtocolInfo::JoinInfo),
+            b"INFOLINK" => Ok(ProtocolInfo::InfoLink),
+            b"SYNCLINK" => Ok(ProtocolInfo::SyncLink),
+            b"UPLINKPROF" => Ok(ProtocolInfo::UpdateLinkProfile),
+            b"KICKLEAVE" => Ok(ProtocolInfo::KickLeave),
+            b"UPDATELINK" => Ok(ProtocolInfo::UpdateLink),
+            b"REPOLEAVE" => Ok(ProtocolInfo::RepoLeave),
+            b"SYNCMAINPF" => Ok(ProtocolInfo::SyncMainProfile),
+            b"SYNCLINKCR" => Ok(ProtocolInfo::SyncLinkCR),
+            b"SYNCLINKUP" => Ok(ProtocolInfo::SyncLinkUpdate),
+            b"SYNCLINKDL" => Ok(ProtocolInfo::SyncLinkDownload),
+            b"KICKMEM" => Ok(ProtocolInfo::KickMember),
+            b"REPORTMEM" => Ok(ProtocolInfo::ReportMember),
+            b"LINKKICKED" => Ok(ProtocolInfo::LinkKicked),
+            b"LNKDELETED" => Ok(ProtocolInfo::LinkDeleted),
+            b"SYNCLINKPF" => Ok(ProtocolInfo::SyncLinkProfile),
+            b"KICKED" => Ok(ProtocolInfo::Kicked),
+            b"SYNCJOIN" => Ok(ProtocolInfo::SyncJoin),
+            b"FEED" => Ok(ProtocolInfo::Feed),
+            b"CHECKJOIN" => Ok(ProtocolInfo::CheckJoin),
+            b"BLIND" => Ok(ProtocolInfo::Blind),
+            b"SYNCBLIND" => Ok(ProtocolInfo::SyncBlind),
+            b"REPORTLINK" => Ok(ProtocolInfo::ReportLink),
+            b"KLSYNC" => Ok(ProtocolInfo::KLSync),
+            b"KLDELITEM" => Ok(ProtocolInfo::KLDeleteItem),
+            b"REACT" => Ok(ProtocolInfo::React),
+            b"REACTCNT" => Ok(ProtocolInfo::ReactCount),
+            b"SETMEMTYPE" => Ok(ProtocolInfo::SetMemberType),
+            b"SYNCMEMT" => Ok(ProtocolInfo::SyncMemberType),
+            b"REWRITE" => Ok(ProtocolInfo::Rewrite),
+            b"SYNCREWR" => Ok(ProtocolInfo::SyncRewrite),
+            b"RELAYEVENT" => Ok(ProtocolInfo::RelayEvent),
+            b"SYNCEVENT" => Ok(ProtocolInfo::SyncEvent),
+            b"GRADD" => Ok(ProtocolInfo::GroupAdd),
+            b"GRADDSYNC" => Ok(ProtocolInfo::GroupAddSync),
+            b"GRDEL" => Ok(ProtocolInfo::GroupDelete),
+            b"GRDELSYNC" => Ok(ProtocolInfo::GroupDeleteSync),
+            b"GRUPDATE" => Ok(ProtocolInfo::GroupUpdate),
+            b"GRUPSYNC" => Ok(ProtocolInfo::GroupUpdateSync),
+            b"GRADDITEM" => Ok(ProtocolInfo::GroupAddItem),
+            b"GRADDISYNC" => Ok(ProtocolInfo::GroupAddItemSync),
+            b"GRDELITEM" => Ok(ProtocolInfo::GroupDeleteItem),
+            b"GRDELISYNC" => Ok(ProtocolInfo::GroupDeleteItemSync),
+            b"GRDELITEMA" => Ok(ProtocolInfo::GroupDeleteItemAttr),
+            b"GRDELIASYN" => Ok(ProtocolInfo::GroupDeleteItemAttrSync),
+            b"GRSETPOS" => Ok(ProtocolInfo::GroupSetPosition),
+            b"GRPOSSYNC" => Ok(ProtocolInfo::GroupPositionSync),
+            b"GRLIST" => Ok(ProtocolInfo::GroupList),
+            b"NOTIRCVS" => Ok(ProtocolInfo::NotificationReceiveSync),
+            b"CHGMOMETAS" => Ok(ProtocolInfo::ChangeMoimMetas),
+            b"GETMOMETA" => Ok(ProtocolInfo::GetMoimMeta),
+            b"MOCLICK" => Ok(ProtocolInfo::MoimClick),
+            b"SETST" => Ok(ProtocolInfo::SetST),
+            b"PUSHACK" => Ok(ProtocolInfo::PushAck),
+            b"SPUSH" => Ok(ProtocolInfo::SPush),
+            b"GETTOKEN" => Ok(ProtocolInfo::GetToken),
+            b"PING" => Ok(ProtocolInfo::Ping),
+            _ => Err(DecodeError::InvalidDiscriminant(discriminant)),
+        }
+    }
+
+    pub fn as_bytes(&self) -> &'static [u8] {
+        match self {
+            ProtocolInfo::GetConfig => b"GETCONF",
+            ProtocolInfo::BuyCS => b"BUYCS",
+            ProtocolInfo::NetworkTest => b"NETTEST",
+            ProtocolInfo::CheckIn => b"CHECKIN",
+            ProtocolInfo::Down => b"DOWN",
+            ProtocolInfo::Mini => b"MINI",
+            ProtocolInfo::Complete => b"COMPLETE",
+            ProtocolInfo::Post => b"POST",
+            ProtocolInfo::SPost => b"SPOST",
+            ProtocolInfo::MPost => b"MPOST",
+            ProtocolInfo::AddMember => b"ADDMEM",
+            ProtocolInfo::NewMember => b"NEWMEM",
+            ProtocolInfo::Leave => b"LEAVE",
+            ProtocolInfo::DeleteMember => b"DELMEM",
+            ProtocolInfo::Left => b"LEFT",
+            ProtocolInfo::BlockSync => b"BLSYNC",
+            ProtocolInfo::BlockAddItem => b"BLADDITEM",
+            ProtocolInfo::BlockDeleteItem => b"BLDELITEM",
+            ProtocolInfo::BlockSpam => b"BLSPAM",
+            ProtocolInfo::BlockSpams => b"BLSPAMS",
+            ProtocolInfo::BlockMember => b"BLMEMBER",
+            ProtocolInfo::Ship => b"SHIP",
+            ProtocolInfo::MShip => b"MSHIP",
+            ProtocolInfo::GetTrailer => b"GETTRAILER",
+            ProtocolInfo::Invoice => b"INVOICE",
+            ProtocolInfo::MInvoice => b"MINVOICE",
+            ProtocolInfo::MCheckTokens => b"MCHKTOKENS",
+            ProtocolInfo::Create => b"CREATE",
+            ProtocolInfo::PCreate => b"PCREATE",
+            ProtocolInfo::ChatInfo => b"CHATINFO",
+            ProtocolInfo::ChatOff => b"CHATOFF",
+            ProtocolInfo::ChatOnRoom => b"CHATONROOM",
+            ProtocolInfo::GetMeta => b"GETMETA",
+            ProtocolInfo::SetMeta => b"SETMETA",
+            ProtocolInfo::ChangeMeta => b"CHGMETA",
+            ProtocolInfo::GetMetas => b"GETMETAS",
+            ProtocolInfo::GetMCMeta => b"GETMCMETA",
+            ProtocolInfo::SetMCMeta => b"SETMCMETA",
+            ProtocolInfo::ChangeMCMeta => b"CHGMCMETA",
+            ProtocolInfo::GetChatST => b"GETCHATST",
+            ProtocolInfo::SetChatST => b"SETCHATST",
+            ProtocolInfo::ChangeChatST => b"CHGCHATST",
+            ProtocolInfo::UpdateChat => b"UPDATECHAT",
+            ProtocolInfo::GetMember => b"GETMEM",
+            ProtocolInfo::Member => b"MEMBER",
+            ProtocolInfo::Write => b"WRITE",
+            ProtocolInfo::Message => b"MSG",
+            ProtocolInfo::Forward => b"FORWARD",
+            ProtocolInfo::DecreaseUnread => b"DECUNREAD",
+            ProtocolInfo::ClearNotification => b"CLEARNOTI",
+            ProtocolInfo::ClearBadge => b"CLRBDG",
+            ProtocolInfo::MChatLogs => b"MCHATLOGS",
+            ProtocolInfo::SyncMessage => b"SYNCMSG",
+            ProtocolInfo::DeleteMessage => b"DELETEMSG",
+            ProtocolInfo::SyncDeleteMessage => b"SYNCDLMSG",
+            ProtocolInfo::SelfDeleteMessage => b"SELFDLMSG",
+            ProtocolInfo::SelfDLAMessage => b"SELFDLAMSG",
+            ProtocolInfo::LoginList => b"LOGINLIST",
+            ProtocolInfo::LoginChatList => b"LCHATLIST",
+            ProtocolInfo::ChangeServer => b"CHANGESVR",
+            ProtocolInfo::VOEvent => b"VOEVENT",
+            ProtocolInfo::SCreate => b"SCREATE",
+            ProtocolInfo::SWrite => b"SWRITE",
+            ProtocolInfo::SAddMember => b"SADDMEM",
+            ProtocolInfo::SetPublicKey => b"SETPK",
+            ProtocolInfo::SetSecretKey => b"SETSK",
+            ProtocolInfo::GetPublicKey => b"GETPK",
+            ProtocolInfo::GetSecretKey => b"GETSK",
+            ProtocolInfo::GetLdapPublicKey => b"GETLPK",
+            ProtocolInfo::CreateLink => b"CREATELINK",
+            ProtocolInfo::DeleteLink => b"DELETELINK",
+            ProtocolInfo::JoinLink => b"JOINLINK",
+            ProtocolInfo::JoinInfo => b"JOININFO",
+            ProtocolInfo::InfoLink => b"INFOLINK",
+            ProtocolInfo::SyncLink => b"SYNCLINK",
+            ProtocolInfo::UpdateLinkProfile => b"UPLINKPROF",
+            ProtocolInfo::KickLeave => b"KICKLEAVE",
+            ProtocolInfo::UpdateLink => b"UPDATELINK",
+            ProtocolInfo::RepoLeave => b"REPOLEAVE",
+            ProtocolInfo::SyncMainProfile => b"SYNCMAINPF",
+            ProtocolInfo::SyncLinkCR => b"SYNCLINKCR",
+            ProtocolInfo::SyncLinkUpdate => b"SYNCLINKUP",
+            ProtocolInfo::SyncLinkDownload => b"SYNCLINKDL",
+            ProtocolInfo::KickMember => b"KICKMEM",
+            ProtocolInfo::ReportMember => b"REPORTMEM",
+            ProtocolInfo::LinkKicked => b"LINKKICKED",
+            ProtocolInfo::LinkDeleted => b"LNKDELETED",
+            ProtocolInfo::SyncLinkProfile => b"SYNCLINKPF",
+            ProtocolInfo::Kicked => b"KICKED",
+            ProtocolInfo::SyncJoin => b"SYNCJOIN",
+            ProtocolInfo::Feed => b"FEED",
+            ProtocolInfo::CheckJoin => b"CHECKJOIN",
+            ProtocolInfo::Blind => b"BLIND",
+            ProtocolInfo::SyncBlind => b"SYNCBLIND",
+            ProtocolInfo::ReportLink => b"REPORTLINK",
+            ProtocolInfo::KLSync => b"KLSYNC",
+            ProtocolInfo::KLDeleteItem => b"KLDELITEM",
+            ProtocolInfo::React => b"REACT",
+            ProtocolInfo::ReactCount => b"REACTCNT",
+            ProtocolInfo::SetMemberType => b"SETMEMTYPE",
+            ProtocolInfo::SyncMemberType => b"SYNCMEMT",
+            ProtocolInfo::Rewrite => b"REWRITE",
+            ProtocolInfo::SyncRewrite => b"SYNCREWR",
+            ProtocolInfo::RelayEvent => b"RELAYEVENT",
+            ProtocolInfo::SyncEvent => b"SYNCEVENT",
+            ProtocolInfo::GroupAdd => b"GRADD",
+            ProtocolInfo::GroupAddSync => b"GRADDSYNC",
+            ProtocolInfo::GroupDelete => b"GRDEL",
+            ProtocolInfo::GroupDeleteSync => b"GRDELSYNC",
+            ProtocolInfo::GroupUpdate => b"GRUPDATE",
+            ProtocolInfo::GroupUpdateSync => b"GRUPSYNC",
+            ProtocolInfo::GroupAddItem => b"GRADDITEM",
+            ProtocolInfo::GroupAddItemSync => b"GRADDISYNC",
+            ProtocolInfo::GroupDeleteItem => b"GRDELITEM",
+            ProtocolInfo::GroupDeleteItemSync => b"GRDELISYNC",
+            ProtocolInfo::GroupDeleteItemAttr => b"GRDELITEMA",
+            ProtocolInfo::GroupDeleteItemAttrSync => b"GRDELIASYN",
+            ProtocolInfo::GroupSetPosition => b"GRSETPOS",
+            ProtocolInfo::GroupPositionSync => b"GRPOSSYNC",
+            ProtocolInfo::GroupList => b"GRLIST",
+            ProtocolInfo::NotificationReceiveSync => b"NOTIRCVS",
+            ProtocolInfo::ChangeMoimMetas => b"CHGMOMETAS",
+            ProtocolInfo::GetMoimMeta => b"GETMOMETA",
+            ProtocolInfo::MoimClick => b"MOCLICK",
+            ProtocolInfo::SetST => b"SETST",
+            ProtocolInfo::PushAck => b"PUSHACK",
+            ProtocolInfo::SPush => b"SPUSH",
+            ProtocolInfo::GetToken => b"GETTOKEN",
+            ProtocolInfo::Ping => b"PING",
+        }
+    }
+}
+
+impl serde::Serialize for ProtocolInfo {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::Serializer
+    {
+        serializer.serialize_bytes(self.as_bytes())
+    }
 }
