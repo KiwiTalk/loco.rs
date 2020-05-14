@@ -41,9 +41,9 @@ impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
         dst.reserve(22 + body_buf.len());
         dst.put_u32_le(item.packet_id);
         dst.put_u16_le(item.status_code);
-        let pad = 10 - item.kind.discriminant().len();
+        let pad = 11 - item.kind.discriminant().len();
         dst.put_slice(item.kind.discriminant());
-        dst.put_slice(&[0, 0, 0, 0, 0, 0, 0, 0, 0, 0][..pad]);
+        dst.put_slice(&[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0][..pad]);
         dst.put_u8(item.body_type);
         dst.put_u32_le(body_buf.len() as u32);
         dst.put(body_buf);
@@ -98,9 +98,9 @@ impl Decoder for LocoCodec {
         }
         let packet_id = src.get_u32_le();
         let status_code = src.get_u16_le();
-        let discriminant = match src.get(..10) {
+        let discriminant = match src.get(..11) {
             Some(bytes) => {
-                let null = bytes.iter().position(|b| *b == 0).unwrap_or(10);
+                let null = bytes.iter().position(|b| *b == 0).unwrap_or(11);
                 Box::from(&bytes[..null])
             }
             None => return Err(DecodeError::UnknownFormat),
