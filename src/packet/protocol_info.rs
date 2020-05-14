@@ -135,7 +135,7 @@ pub enum ProtocolInfo {
 }
 
 impl ProtocolInfo {
-    pub fn from_bytes(discriminant: &[u8]) -> Result<Self, DecodeError> {
+    pub(crate) fn from_bytes(discriminant: &[u8]) -> Result<Self, DecodeError> {
         match discriminant {
             b"GETCONF" => Ok(ProtocolInfo::GetConfig),
             b"BUYCS" => Ok(ProtocolInfo::BuyChatSticker),
@@ -270,7 +270,7 @@ impl ProtocolInfo {
         }
     }
 
-    pub fn as_bytes(&self) -> &'static [u8] {
+    pub(crate) fn as_bytes(&self) -> &'static [u8] {
         match self {
             ProtocolInfo::GetConfig => b"GETCONF",
             ProtocolInfo::BuyChatSticker => b"BUYCS",
