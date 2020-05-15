@@ -1,7 +1,9 @@
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-pub struct BuyCallServerResponse {
+pub struct CheckInResponse {
+    host: Option<String>,
+    host6: Option<String>,
     cshost: Option<String>,
     cshost6: Option<String>,
     csport: i32,

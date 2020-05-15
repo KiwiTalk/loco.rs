@@ -23,6 +23,7 @@ pub enum LocoRequest {
     None,
     GetConfig(protocol::get_conf::GetConfigRequest),
     NetworkTest,
+    Mini(protocol::mini::MiniRequest),
     Ping,
 }
 
@@ -34,6 +35,7 @@ impl LocoRequest {
             None => ProtocolInfo::None.as_bytes(),
             GetConfig(_) => ProtocolInfo::GetConfig.as_bytes(),
             NetworkTest => ProtocolInfo::NetworkTest.as_bytes(),
+            Mini(_) => ProtocolInfo::Mini.as_bytes(),
             Ping => ProtocolInfo::Ping.as_bytes(),
         }
     }
@@ -44,6 +46,9 @@ pub enum LocoResponse {
     GetConfig(protocol::get_conf::GetConfigResponse),
     BuyCallServer(protocol::buy_call_server::BuyCallServerResponse),
     NetworkTest,
+    CheckIn(protocol::check_in::CheckInResponse),
+    Down(protocol::down::DownResponse),
+    Mini(protocol::mini::MiniResponse),
     Ping,
 }
 
@@ -61,22 +66,24 @@ impl From<bson::DecoderError> for DecodeError<'_> {
 impl LocoResponse {
     pub(crate) fn from_bson<'a>(discriminant: &'a [u8], buffer: &[u8]) -> Result<Self, DecodeError<'a>> {
         let mut reader = buffer.reader();
+
+        macro_rules! parse_loco_response {
+            ($reader: expr, $name: expr) => {{
+                decode_document(&mut $reader).map(Into::into)
+                    .and_then(from_bson)
+                    .map($name)
+                    .map_err(Into::into)
+            }}
+        }
+
         match ProtocolInfo::from_bytes(discriminant)? {
             ProtocolInfo::None => Ok(LocoResponse::None),
-            ProtocolInfo::GetConfig => decode_document(&mut reader)
-                .map(Into::into)
-                .and_then(from_bson)
-                .map(LocoResponse::GetConfig)
-                .map_err(Into::into),
-            ProtocolInfo::BuyCallServer => decode_document(&mut reader)
-                .map(Into::into)
-                .and_then(from_bson)
-                .map(LocoResponse::BuyCallServer)
-                .map_err(Into::into),
+            ProtocolInfo::GetConfig => parse_loco_response!(reader, LocoResponse::GetConfig),
+            ProtocolInfo::BuyCallServer => parse_loco_response!(reader, LocoResponse::BuyCallServer),
             ProtocolInfo::NetworkTest => Ok(LocoResponse::NetworkTest),
-            ProtocolInfo::CheckIn => todo!(),
-            ProtocolInfo::Down => todo!(),
-            ProtocolInfo::Mini => todo!(),
+            ProtocolInfo::CheckIn => parse_loco_response!(reader, LocoResponse::CheckIn),
+            ProtocolInfo::Down => parse_loco_response!(reader, LocoResponse::Down),
+            ProtocolInfo::Mini => parse_loco_response!(reader, LocoResponse::Mini),
             ProtocolInfo::Complete => todo!(),
             ProtocolInfo::Post => todo!(),
             ProtocolInfo::SyncPost => todo!(),
