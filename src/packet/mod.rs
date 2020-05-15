@@ -3,6 +3,7 @@ use bytes::buf::BufExt;
 use serde::Serialize;
 
 use crate::packet::protocol_info::ProtocolInfo;
+use crate::packet::LocoResponse::NetworkTest;
 
 mod protocol_info;
 mod protocol;
@@ -21,6 +22,7 @@ pub struct LocoPacket<T> {
 pub enum LocoRequest {
     None,
     GetConfig(protocol::get_conf::GetConfigRequest),
+    NetworkTest,
     Ping,
 }
 
@@ -31,6 +33,7 @@ impl LocoRequest {
         match self {
             None => ProtocolInfo::None.as_bytes(),
             GetConfig(_) => ProtocolInfo::GetConfig.as_bytes(),
+            NetworkTest => ProtocolInfo::NetworkTest.as_bytes(),
             Ping => ProtocolInfo::Ping.as_bytes(),
         }
     }
@@ -40,6 +43,7 @@ pub enum LocoResponse {
     None,
     GetConfig(protocol::get_conf::GetConfigResponse),
     BuyCallServer(protocol::buy_call_server::BuyCallServerResponse),
+    NetworkTest,
     Ping,
 }
 
@@ -69,7 +73,7 @@ impl LocoResponse {
                 .and_then(from_bson)
                 .map(LocoResponse::BuyCallServer)
                 .map_err(Into::into),
-            ProtocolInfo::NetworkTest => todo!(),
+            ProtocolInfo::NetworkTest => Ok(LocoResponse::NetworkTest),
             ProtocolInfo::CheckIn => todo!(),
             ProtocolInfo::Down => todo!(),
             ProtocolInfo::Mini => todo!(),
