@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::internal::agent::Os;
 use crate::packet::LocoRequest;
-use crate::packet::model::{connection_info, etc_info, ticket_info, trailer_info, trailer_info_high};
 
 #[derive(Serialize)]
 pub struct MiniRequest {

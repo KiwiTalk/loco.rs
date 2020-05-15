@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 pub use custom::*;
 pub use emoticon::*;
 pub use file::*;
@@ -10,6 +12,7 @@ pub mod file;
 pub mod sharp;
 pub mod text;
 
+#[derive(Serialize, Deserialize, Clone)]
 pub enum ChatAttachment {
     Emoticon(EmoticonAttachment),
 

@@ -24,6 +24,7 @@ pub enum LocoRequest {
     GetConfig(protocol::get_conf::GetConfigRequest),
     NetworkTest,
     Mini(protocol::mini::MiniRequest),
+    SyncMessage(protocol::sync_message::SyncMessageRequest),
     Ping,
 }
 
@@ -36,6 +37,7 @@ impl LocoRequest {
             GetConfig(_) => ProtocolInfo::GetConfig.as_bytes(),
             NetworkTest => ProtocolInfo::NetworkTest.as_bytes(),
             Mini(_) => ProtocolInfo::Mini.as_bytes(),
+            SyncMessage(_) => ProtocolInfo::SyncMessage.as_bytes(),
             Ping => ProtocolInfo::Ping.as_bytes(),
         }
     }
@@ -49,6 +51,7 @@ pub enum LocoResponse {
     CheckIn(protocol::check_in::CheckInResponse),
     Down(protocol::down::DownResponse),
     Mini(protocol::mini::MiniResponse),
+    SyncMessage(protocol::sync_message::SyncMessageResponse),
     Ping,
 }
 
@@ -130,7 +133,7 @@ impl LocoResponse {
             ProtocolInfo::ClearNotification => todo!(),
             ProtocolInfo::ClearBadge => todo!(),
             ProtocolInfo::MChatLogs => todo!(),
-            ProtocolInfo::SyncMessage => todo!(),
+            ProtocolInfo::SyncMessage => parse_loco_response!(reader, LocoResponse::SyncMessage),
             ProtocolInfo::DeleteMessage => todo!(),
             ProtocolInfo::SyncDeleteMessage => todo!(),
             ProtocolInfo::SelfDeleteMessage => todo!(),

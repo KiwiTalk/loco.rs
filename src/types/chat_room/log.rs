@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::{ChannelId, ChatAttachment, ChatType, LogId, Timestamp, UserId};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct ChatLog {
     #[serde(rename = "logId")]
     pub log_id: LogId,

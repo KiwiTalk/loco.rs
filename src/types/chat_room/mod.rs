@@ -1,10 +1,11 @@
 pub use attachment::*;
 pub use chat::*;
 pub use feed::*;
+pub use log::*;
 pub use member::*;
 
-mod attachment;
-mod chat;
-mod feed;
-mod member;
-
+pub mod attachment;
+pub mod chat;
+pub mod feed;
+pub mod log;
+pub mod member;
