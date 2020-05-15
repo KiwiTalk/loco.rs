@@ -1,6 +1,12 @@
-use crate::{net::{LocoCodec}, packet::{LocoPacket, LocoResponse, LocoRequest}};
-use tokio::sync::mpsc::{unbounded_channel, UnboundedSender, error::SendError};
-use tokio::{stream::StreamExt, net::{ToSocketAddrs, TcpStream}};
+use crate::{
+    net::LocoCodec,
+    packet::{LocoPacket, LocoRequest, LocoResponse},
+};
+use tokio::sync::mpsc::{error::SendError, unbounded_channel, UnboundedSender};
+use tokio::{
+    net::{TcpStream, ToSocketAddrs},
+    stream::StreamExt,
+};
 use tokio_util::codec::Framed;
 
 #[derive(Clone)]
@@ -9,7 +15,10 @@ pub struct Writer {
 }
 
 impl Writer {
-    pub fn send(&self, packet: LocoPacket<LocoRequest>) -> Result<(), SendError<LocoPacket<LocoRequest>>> {
+    pub fn send(
+        &self,
+        packet: LocoPacket<LocoRequest>,
+    ) -> Result<(), SendError<LocoPacket<LocoRequest>>> {
         self.tx.send(packet)
     }
 }
@@ -26,26 +35,22 @@ pub struct Dispatcher {
 impl Dispatcher {
     pub fn handler<H>(mut self, handler: H) -> Self
     where
-        H: FnMut(HandlerContext) -> () + Send + 'static
+        H: FnMut(HandlerContext) -> () + Send + 'static,
     {
         let (tx, rx) = unbounded_channel();
-        tokio::spawn(async move {
-            rx.map(handler)
-        });
+        tokio::spawn(async move { rx.map(handler) });
         self.handler = Some(tx);
         self
     }
 
     pub async fn run(&mut self, host: impl ToSocketAddrs) -> Result<(), std::io::Error> {
-        use log::error;
         use futures::SinkExt;
+        use log::error;
 
         let socket = TcpStream::connect(host).await?;
         let mut framed = Framed::new(socket, LocoCodec);
         let (tx, mut rx) = unbounded_channel();
-        let writer = Writer {
-            tx
-        };
+        let writer = Writer { tx };
         loop {
             tokio::select! {
                 read = framed.next() => {
