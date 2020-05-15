@@ -39,6 +39,7 @@ impl LocoRequest {
 pub enum LocoResponse {
     None,
     GetConfig(protocol::get_conf::GetConfigResponse),
+    BuyCallServer(protocol::buy_call_server::BuyCallServerResponse),
     Ping,
 }
 
@@ -63,7 +64,11 @@ impl LocoResponse {
                 .and_then(from_bson)
                 .map(LocoResponse::GetConfig)
                 .map_err(Into::into),
-            ProtocolInfo::BuyCallServer => todo!(),
+            ProtocolInfo::BuyCallServer => decode_document(&mut reader)
+                .map(Into::into)
+                .and_then(from_bson)
+                .map(LocoResponse::BuyCallServer)
+                .map_err(Into::into),
             ProtocolInfo::NetworkTest => todo!(),
             ProtocolInfo::CheckIn => todo!(),
             ProtocolInfo::Down => todo!(),
