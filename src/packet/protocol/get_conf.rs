@@ -4,8 +4,6 @@ use crate::internal::agent::Os;
 use crate::packet::LocoRequest;
 use crate::packet::model::{connection_info, etc_info, ticket_info, trailer_info, trailer_info_high};
 
-use super::LocoRequest;
-
 #[derive(Serialize)]
 pub struct GetConfigRequest {
     #[serde(rename = "MCCMNC")]
@@ -14,9 +12,9 @@ pub struct GetConfigRequest {
     pub model: String,
 }
 
-impl From<GetConfig> for LocoRequest {
-    fn from(packet: GetConfig) -> Self {
-        Self::GetConfig(packet)
+impl From<GetConfigRequest> for LocoRequest {
+    fn from(packet: GetConfigRequest) -> Self {
+        packet.into()
     }
 }
 
@@ -31,13 +29,4 @@ pub struct GetConfigResponse {
     #[serde(rename = "trailer.h")]
     trailer_high: trailer_info_high::TrailerInfoHigh,
     etc: etc_info::EtcInfo,
-}
-
-impl<'de> Deserialize<'de> for GetConfigResponse {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: serde::Deserializer<'de>
-    {
-        Ok(GetConfigResponse::deserialize(deserializer)?)
-    }
 }

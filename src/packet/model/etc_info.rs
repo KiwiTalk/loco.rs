@@ -1,3 +1,5 @@
+use serde::Deserialize;
+
 #[derive(Deserialize)]
 pub struct EtcInfo {
     #[serde(rename = "writeRetryTimeout")]
