@@ -1,25 +1,22 @@
-use crate::{net::{EncodeError, LocoCodec}, packet::{LocoPacket, LocoResponse, LocoRequest}};
-use std::sync::Arc;
-use tokio::io::WriteHalf;
-use tokio::sync::{Mutex, mpsc::{unbounded_channel, UnboundedSender}};
-use tokio::{stream::StreamExt, net::TcpStream};
-use tokio_util::codec::{Decoder, FramedWrite};
-use futures::SinkExt;
+use crate::{net::{LocoCodec}, packet::{LocoPacket, LocoResponse, LocoRequest}};
+use tokio::sync::mpsc::{unbounded_channel, UnboundedSender, error::SendError};
+use tokio::{stream::StreamExt, net::{ToSocketAddrs, TcpStream}};
+use tokio_util::codec::Framed;
 
+#[derive(Clone)]
 pub struct Writer {
-    stream: Mutex<FramedWrite<WriteHalf<TcpStream>, LocoCodec>>,
+    tx: UnboundedSender<LocoPacket<LocoRequest>>,
 }
 
 impl Writer {
-    pub async fn send(&self, packet: LocoPacket<LocoRequest>) -> Result<(), EncodeError> {
-        let mut stream = self.stream.lock().await;
-        stream.send(packet).await
+    pub fn send(&self, packet: LocoPacket<LocoRequest>) -> Result<(), SendError<LocoPacket<LocoRequest>>> {
+        self.tx.send(packet)
     }
 }
 
 pub struct HandlerContext {
-    writer: Arc<Writer>,
-    packet: LocoPacket<LocoResponse>,
+    pub writer: Writer,
+    pub packet: LocoPacket<LocoResponse>,
 }
 
 pub struct Dispatcher {
@@ -39,7 +36,40 @@ impl Dispatcher {
         self
     }
 
-    pub async fn run(&mut self) -> Result<(), std::io::Error> {
-        todo!()
+    pub async fn run(&mut self, host: impl ToSocketAddrs) -> Result<(), std::io::Error> {
+        use log::error;
+        use futures::SinkExt;
+
+        let socket = TcpStream::connect(host).await?;
+        let mut framed = Framed::new(socket, LocoCodec);
+        let (tx, mut rx) = unbounded_channel();
+        let writer = Writer {
+            tx
+        };
+        loop {
+            tokio::select! {
+                read = framed.next() => {
+                    match read {
+                        Some(Ok(packet)) => {
+                            if let Some(handler) = &self.handler {
+                                handler.send(HandlerContext {
+                                    writer: writer.clone(),
+                                    packet,
+                                }).ok().expect("Packet receiver has been dropped");
+                            }
+                        }
+                        Some(Err(e)) => error!("Could not read packet: {:?}", e),
+                        _ => break
+                    }
+                }
+                Some(write) = rx.recv() => {
+                    // TODO: better error handling
+                    if let Err(e) = framed.send(write).await {
+                        error!("Could not send packet: {:?}", e);
+                    }
+                }
+            }
+        }
+        Ok(())
     }
 }

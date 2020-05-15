@@ -5,6 +5,8 @@ use tokio_util::codec::{Decoder, Encoder};
 
 pub struct LocoCodec;
 
+// TODO: implement Display (for human-friendly error message)
+#[derive(Debug)]
 pub enum EncodeError {
     Io(std::io::Error),
     Bson(bson::EncoderError),
@@ -51,6 +53,8 @@ impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
     }
 }
 
+// TODO: implement Display (for human-friendly error message)
+#[derive(Debug)]
 pub enum DecodeError {
     Io(std::io::Error),
     Bson(bson::DecoderError),
