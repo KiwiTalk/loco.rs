@@ -5,7 +5,9 @@ use serde::Serialize;
 use crate::packet::protocol_info::ProtocolInfo;
 
 mod protocol_info;
-mod get_conf;
+mod protocol;
+
+mod model;
 
 pub struct LocoPacket<T> {
     pub packet_id: u32,
@@ -17,7 +19,8 @@ pub struct LocoPacket<T> {
 #[derive(Serialize)]
 #[serde(untagged)]
 pub enum LocoRequest {
-    GetConfig(get_conf::GetConfig),
+    None,
+    GetConfig(protocol::get_conf::GetConfigRequest),
     Ping,
 }
 
@@ -26,6 +29,7 @@ impl LocoRequest {
         use LocoRequest::*;
 
         match self {
+            None => ProtocolInfo::None.as_bytes(),
             GetConfig(_) => ProtocolInfo::GetConfig.as_bytes(),
             Ping => ProtocolInfo::Ping.as_bytes(),
         }
@@ -33,7 +37,8 @@ impl LocoRequest {
 }
 
 pub enum LocoResponse {
-    Config(get_conf::Config),
+    None,
+    GetConfig(protocol::get_conf::GetConfigResponse),
     Ping,
 }
 
@@ -52,8 +57,12 @@ impl LocoResponse {
     pub(crate) fn from_bson<'a>(discriminant: &'a [u8], buffer: &[u8]) -> Result<Self, DecodeError<'a>> {
         let mut reader = buffer.reader();
         match ProtocolInfo::from_bytes(discriminant)? {
-            ProtocolInfo::None => todo!(),
-            ProtocolInfo::GetConfig => decode_document(&mut reader).map(Into::into).and_then(from_bson).map(Self::Config).map_err(Into::into),
+            ProtocolInfo::None => Ok(LocoResponse::None),
+            ProtocolInfo::GetConfig => decode_document(&mut reader)
+                .map(Into::into)
+                .and_then(from_bson)
+                .map(LocoResponse::GetConfig)
+                .map_err(Into::into),
             ProtocolInfo::BuyCallServer => todo!(),
             ProtocolInfo::NetworkTest => todo!(),
             ProtocolInfo::CheckIn => todo!(),
@@ -61,8 +70,8 @@ impl LocoResponse {
             ProtocolInfo::Mini => todo!(),
             ProtocolInfo::Complete => todo!(),
             ProtocolInfo::Post => todo!(),
-            ProtocolInfo::SPost => todo!(),
-            ProtocolInfo::MPost => todo!(),
+            ProtocolInfo::SyncPost => todo!(),
+            ProtocolInfo::MultiPost => todo!(),
             ProtocolInfo::AddMember => todo!(),
             ProtocolInfo::NewMember => todo!(),
             ProtocolInfo::Leave => todo!(),
@@ -81,7 +90,7 @@ impl LocoResponse {
             ProtocolInfo::MultiInvoice => todo!(),
             ProtocolInfo::MultiCheckTokens => todo!(),
             ProtocolInfo::Create => todo!(),
-            ProtocolInfo::PCreate => todo!(),
+            ProtocolInfo::PublicCreate => todo!(),
             ProtocolInfo::ChatInfo => todo!(),
             ProtocolInfo::ChatOff => todo!(),
             ProtocolInfo::ChatOnRoom => todo!(),
@@ -113,6 +122,7 @@ impl LocoResponse {
             ProtocolInfo::LoginList => todo!(),
             ProtocolInfo::LocoChatList => todo!(),
             ProtocolInfo::ChangeServer => todo!(),
+            ProtocolInfo::Ping => Ok(LocoResponse::Ping),
             ProtocolInfo::VoiceEvent => todo!(),
             ProtocolInfo::SecretCreate => todo!(),
             ProtocolInfo::SecretWrite => todo!(),
@@ -165,7 +175,6 @@ impl LocoResponse {
             ProtocolInfo::PushAck => todo!(),
             ProtocolInfo::SyncPush => todo!(),
             ProtocolInfo::GetToken => todo!(),
-            ProtocolInfo::Ping => Ok(Self::Ping),
         }
     }
 }
