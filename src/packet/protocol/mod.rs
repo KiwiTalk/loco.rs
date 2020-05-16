@@ -4,3 +4,4 @@ pub mod check_in;
 pub mod down;
 pub mod mini;
 pub mod sync_message;
+pub mod login_list;

@@ -16,6 +16,7 @@ mod token_client;
 mod login_data;
 mod device_register_data;
 pub mod agent;
+pub mod net_type;
 
 /*** macros ***/
 #[macro_export]

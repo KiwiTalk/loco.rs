@@ -23,8 +23,10 @@ pub enum LocoRequest {
     None,
     GetConfig(protocol::get_conf::GetConfigRequest),
     NetworkTest,
+    CheckIn(protocol::check_in::CheckInRequest),
     Mini(protocol::mini::MiniRequest),
     SyncMessage(protocol::sync_message::SyncMessageRequest),
+    LoginList(protocol::login_list::LoginListRequest),
     Ping,
 }
 
@@ -36,8 +38,10 @@ impl LocoRequest {
             None => ProtocolInfo::None.as_bytes(),
             GetConfig(_) => ProtocolInfo::GetConfig.as_bytes(),
             NetworkTest => ProtocolInfo::NetworkTest.as_bytes(),
+            CheckIn(_) => ProtocolInfo::CheckIn.as_bytes(),
             Mini(_) => ProtocolInfo::Mini.as_bytes(),
             SyncMessage(_) => ProtocolInfo::SyncMessage.as_bytes(),
+            LoginList(_) => ProtocolInfo::LoginList.as_bytes(),
             Ping => ProtocolInfo::Ping.as_bytes(),
         }
     }
@@ -52,6 +56,7 @@ pub enum LocoResponse {
     Down(protocol::down::DownResponse),
     Mini(protocol::mini::MiniResponse),
     SyncMessage(protocol::sync_message::SyncMessageResponse),
+    LoginList(protocol::login_list::LoginListResponse),
     Ping,
 }
 
@@ -138,7 +143,7 @@ impl LocoResponse {
             ProtocolInfo::SyncDeleteMessage => todo!(),
             ProtocolInfo::SelfDeleteMessage => todo!(),
             ProtocolInfo::SelfDLAMessage => todo!(),
-            ProtocolInfo::LoginList => todo!(),
+            ProtocolInfo::LoginList => parse_loco_response!(reader, LocoResponse::LoginList),
             ProtocolInfo::LocoChatList => todo!(),
             ProtocolInfo::ChangeServer => todo!(),
             ProtocolInfo::Ping => Ok(LocoResponse::Ping),
