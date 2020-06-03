@@ -32,7 +32,10 @@ impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
     ) -> Result<(), Self::Error> {
         let body_buf = BytesMut::new();
         let mut writer = body_buf.writer();
-        bson::to_bson(&item.kind)?.as_document().expect("Invalid serialization").to_writer(&mut writer)?;
+        bson::to_bson(&item.kind)?
+            .as_document()
+            .expect("Invalid serialization")
+            .to_writer(&mut writer)?;
         let body_buf = writer.into_inner();
         dst.reserve(22 + body_buf.len());
         dst.put_u32_le(item.packet_id);
