@@ -1,5 +1,4 @@
 use crate::packet::*;
-use bson::{encode_document, to_bson};
 use bytes::{buf::*, BytesMut};
 use tokio_util::codec::{Decoder, Encoder};
 
@@ -9,7 +8,7 @@ pub struct LocoCodec;
 #[derive(Debug)]
 pub enum EncodeError {
     Io(std::io::Error),
-    Bson(bson::EncoderError),
+    Bson(bson::ser::Error),
 }
 
 impl From<std::io::Error> for EncodeError {
@@ -18,8 +17,8 @@ impl From<std::io::Error> for EncodeError {
     }
 }
 
-impl From<bson::EncoderError> for EncodeError {
-    fn from(inner: bson::EncoderError) -> Self {
+impl From<bson::ser::Error> for EncodeError {
+    fn from(inner: bson::ser::Error) -> Self {
         Self::Bson(inner)
     }
 }
@@ -33,12 +32,7 @@ impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
     ) -> Result<(), Self::Error> {
         let body_buf = BytesMut::new();
         let mut writer = body_buf.writer();
-        encode_document(
-            &mut writer,
-            to_bson(&item.kind)?
-                .as_document()
-                .expect("Invalid serialization"),
-        )?;
+        bson::to_bson(&item.kind)?.as_document().expect("Invalid serialization").to_writer(&mut writer)?;
         let body_buf = writer.into_inner();
         dst.reserve(22 + body_buf.len());
         dst.put_u32_le(item.packet_id);
@@ -57,7 +51,7 @@ impl Encoder<LocoPacket<LocoRequest>> for LocoCodec {
 #[derive(Debug)]
 pub enum DecodeError {
     Io(std::io::Error),
-    Bson(bson::DecoderError),
+    Bson(bson::de::Error),
     UnknownFormat,
     InvalidDiscriminant(Box<[u8]>),
 }
@@ -68,8 +62,8 @@ impl From<std::io::Error> for DecodeError {
     }
 }
 
-impl From<bson::DecoderError> for DecodeError {
-    fn from(inner: bson::DecoderError) -> Self {
+impl From<bson::de::Error> for DecodeError {
+    fn from(inner: bson::de::Error) -> Self {
         Self::Bson(inner)
     }
 }

@@ -27,7 +27,7 @@ impl LocoRequest {
     }
 }
 
-use bson::{decode_document, from_bson};
+use bson::{document::Document, from_bson};
 use bytes::buf::BufExt;
 
 pub enum LocoResponse {
@@ -36,12 +36,12 @@ pub enum LocoResponse {
 }
 
 pub(crate) enum DecodeError<'a> {
-    Bson(bson::DecoderError),
+    Bson(bson::de::Error),
     InvalidDiscriminant(&'a [u8]),
 }
 
-impl From<bson::DecoderError> for DecodeError<'_> {
-    fn from(inner: bson::DecoderError) -> Self {
+impl From<bson::de::Error> for DecodeError<'_> {
+    fn from(inner: bson::de::Error) -> Self {
         DecodeError::Bson(inner)
     }
 }
@@ -53,7 +53,7 @@ impl LocoResponse {
     ) -> Result<Self, DecodeError<'a>> {
         let mut reader = buffer.reader();
         match discriminant {
-            b"GETCONF" => decode_document(&mut reader)
+            b"GETCONF" => Document::from_reader(&mut reader)
                 .map(Into::into)
                 .and_then(from_bson)
                 .map(Self::Config)
