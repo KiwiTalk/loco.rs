@@ -16,7 +16,7 @@ repository = "https://github.com/organization/loco.rs"
 license = "Apache-2.0"
 
 [dependencies]
-bson = "0.14"
+bson = "0.15"
 hex-literal = "0.2.1"
 reqwest = { version = "0.10", features = ["blocking"] }
 sha2 = "0.8.1"
