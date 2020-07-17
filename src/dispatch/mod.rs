@@ -35,7 +35,7 @@ pub struct Dispatcher {
 impl Dispatcher {
     pub fn handler<H>(mut self, handler: H) -> Self
     where
-        H: FnMut(HandlerContext) -> () + Send + 'static,
+        H: FnMut(HandlerContext) + Send + 'static,
     {
         let (tx, rx) = unbounded_channel();
         tokio::spawn(async move { rx.map(handler) });
