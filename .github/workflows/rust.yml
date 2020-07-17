@@ -21,6 +21,16 @@ jobs:
           toolchain: stable
           override: true
 
+      - name: Cache Rust modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-rust-
+
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
@@ -41,6 +51,16 @@ jobs:
           toolchain: stable
           override: true
           components: rustfmt, clippy
+
+      - name: Cache Rust modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-rust-
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
