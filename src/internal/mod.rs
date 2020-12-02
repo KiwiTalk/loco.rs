@@ -2,17 +2,19 @@ pub use attachment::AttachmentType;
 pub use device_register_data::DeviceRegisterData;
 pub use language::Language;
 pub use login_data::LoginData;
+pub use login_access_data::LoginAccessData;
 pub use token_client::TokenClient;
 pub use xvc_key::XVCKey;
 
 pub mod account;
 pub mod emoticon;
 pub mod key;
-
 pub mod agent;
+
 mod attachment;
 mod device_register_data;
 mod language;
+mod login_access_data;
 mod login_data;
 mod token_client;
 mod xvc_key;
