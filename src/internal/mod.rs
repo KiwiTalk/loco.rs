@@ -5,6 +5,7 @@ pub use login_data::LoginData;
 pub use login_access_data::LoginAccessData;
 pub use token_client::TokenClient;
 pub use xvc_key::XVCKey;
+pub use status_code::StatusCode;
 
 pub mod account;
 pub mod emoticon;
@@ -18,6 +19,7 @@ mod login_access_data;
 mod login_data;
 mod token_client;
 mod xvc_key;
+mod status_code;
 
 /*** macros ***/
 #[macro_export]
