@@ -10,4 +10,6 @@ pub enum StatusCode {
 
 	WrongConfirmCode = -111,
 	TooManyConfirmRequest = -112,
+
+	Failed = -500
 }
