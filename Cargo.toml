@@ -30,3 +30,6 @@ tokio-util = { version = "0.3.1", features = ["codec"], default-features = false
 bytes = "0.5.4"
 futures = "0.3.5"
 log = "0.4.8"
+loco-derive = { path = "loco-derive" }
+webpki = "0.21"
+bincode = "1.3"

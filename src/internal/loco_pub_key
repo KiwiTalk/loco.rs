@@ -1,8 +1,3 @@
-pub const LOCO_PEM_PUB_KEY: &str = include_str!("loco_pem_pub_key");
-
-// Type check required
-pub const LOCO_PUB_KEY: ([u8; 256], u8) = (
-    hex_literal::hex!("
 a449 6044 1c7e 83bb 2789 8156 ecb1 3c8a
 faf0 5d28 4a4d 1155 f255 cd22 d317 6cde
 5048 2f2f 27f7 1348 e4d2 eb5f 57bf 9671
@@ -19,6 +14,3 @@ ae43 bfe2 03c4 a617 f9f2 32b5 458a 9ab4
 77d1 5d0f 082b 8207 eaf7 cdcb 1312 3937
 cb12 1458 3764 8c2f 3a65 0181 6231 5e77
 ead2 d2dd 5986 e462 5176 4a43 b9ba 8f79
-    "),
-    0x03,
-);

@@ -1,5 +1,5 @@
-pub mod dispatch;
+#![feature(associated_type_defaults)]
+
 pub mod internal;
-pub mod net;
-pub mod packet;
+pub mod protocol;
 pub mod types;
