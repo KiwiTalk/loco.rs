@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 use loco_derive::{LocoPacketPair, BsonData};
 use crate::protocol::structs::connection::{ConnectionData, HostData};
+use crate::types::Os;
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(GetConfRequest, GetConfResponse)]
@@ -14,7 +15,7 @@ pub struct GetConfRequest {
 	pub mccmnc: String,
 
 	/// Current OS (win32, android, mac, etc.)
-	pub os: String,
+	pub os: Os,
 
 	/// Device model (mobile only) leave it empty if it's not mobile device.
 	pub model: String

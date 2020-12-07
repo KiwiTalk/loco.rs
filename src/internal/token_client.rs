@@ -3,7 +3,8 @@ use std::ops::Deref;
 use reqwest::blocking::Response;
 use reqwest::Error;
 
-use crate::internal::{account, agent::Os, DeviceRegisterData, LoginData, LoginAccessData, AUTH_USER_AGENT};
+use crate::internal::{account, DeviceRegisterData, LoginData, LoginAccessData, AUTH_USER_AGENT};
+use crate::types::Os;
 
 pub struct TokenClient {
     client: reqwest::blocking::Client,

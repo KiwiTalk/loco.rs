@@ -10,7 +10,6 @@ pub use status_code::StatusCode;
 pub mod account;
 pub mod emoticon;
 pub mod key;
-pub mod agent;
 
 mod attachment;
 mod device_register_data;
