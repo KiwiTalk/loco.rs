@@ -1,4 +1,5 @@
-use crate::internal::{agent::Os, XVCKey, AUTH_HEADER_WITHOUT_AGENT, AUTH_USER_AGENT, LANGUAGE};
+use crate::internal::{XVCKey, AUTH_HEADER_WITHOUT_AGENT, AUTH_USER_AGENT, LANGUAGE};
+use crate::types::Os;
 use crate::{define, define_host};
 use reqwest::header::{self, HeaderMap, HeaderValue};
 use reqwest::Url;

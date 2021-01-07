@@ -1,9 +1,10 @@
+use crate::internal::StatusCode;
 use serde::{Deserialize, Serialize};
 
 // Maps to LoginAccessDataStruct
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LoginAccessData {
-    pub status: i32,
+    pub status: Option<StatusCode>,
     pub story_url: Option<String>,
     pub user_id: Option<i32>,
     pub country_iso: Option<String>,

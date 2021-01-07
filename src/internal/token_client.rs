@@ -3,8 +3,8 @@ use std::ops::Deref;
 use reqwest::blocking::Response;
 use reqwest::Error;
 
-use crate::internal::{account, agent::Os, DeviceRegisterData, LoginData, AUTH_USER_AGENT};
-use crate::types::structs::login::LoginAccessData;
+use crate::internal::{account, DeviceRegisterData, LoginAccessData, LoginData, AUTH_USER_AGENT};
+use crate::types::Os;
 
 pub struct TokenClient {
     client: reqwest::blocking::Client,
@@ -43,26 +43,40 @@ impl TokenClient {
         }
     }
 
-    pub fn request_passcode(&self, login_data: &LoginData) -> Result<Response, Error> {
-        self.post(account::get_request_passcode_url(&self.agent))
+    pub fn request_passcode(&self, login_data: &LoginData) -> Result<LoginAccessData, Error> {
+        let result = self
+            .post(account::get_request_passcode_url(&self.agent))
             .headers(account::get_auth_header(
                 &self.agent,
                 &login_data.to_xvc_key(AUTH_USER_AGENT),
             ))
             .form(login_data)
-            .send()
+            .send();
+        match result {
+            Ok(response) => Ok(serde_json::from_str(&response.text().unwrap()).unwrap()),
+            Err(error) => Err(error),
+        }
     }
 
     pub fn register_device(
         &self,
         device_register_data: &DeviceRegisterData,
-    ) -> Result<Response, Error> {
-        self.post(account::get_register_device_url(&self.agent))
+    ) -> Result<LoginAccessData, Error> {
+        let result = self
+            .post(account::get_register_device_url(&self.agent))
             .headers(account::get_auth_header(
                 &self.agent,
                 &device_register_data.to_xvc_key(AUTH_USER_AGENT),
             ))
             .form(device_register_data)
-            .send()
+            .send();
+        match result {
+            Ok(response) => {
+                let text = response.text().unwrap();
+                println!("{}", &text);
+                Ok(serde_json::from_str(&text).unwrap())
+            }
+            Err(error) => Err(error),
+        }
     }
 }
