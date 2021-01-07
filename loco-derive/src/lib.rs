@@ -26,7 +26,7 @@ pub fn derive_loco_packet_pair(input: TokenStream) -> TokenStream {
         .attrs
         .iter()
         .filter(|a| a.path.segments.len() == 1 && a.path.segments[0].ident == "loco_packet_pair")
-        .nth(0)
+        .next()
         .expect("attribute loco_packet_pair(request, response)");
 
     let command_pair: LocoPacketPair =
