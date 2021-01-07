@@ -4,8 +4,8 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoResponse, BsonData};
+use loco_derive::{BsonData, LocoResponse};
+use serde::{Deserialize, Serialize};
 
 /// If received, Client must change server or client will get disconencted soon.
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData, LocoResponse)]

@@ -8,23 +8,20 @@
 
 use std::io::{Read, Write};
 
-use std::ops::{Deref, DerefMut};
 use super::RawLocoPacket;
+use std::ops::{Deref, DerefMut};
 
 /// Like BufReader and BufWriter, provide optimized Command read/write operation to stream.
 pub struct RawLocoClient<S: Read + Write> {
-    
     pub stream: S,
-    read_buffer: [u8; 2048]
-    
+    read_buffer: [u8; 2048],
 }
 
 impl<S: Read + Write> RawLocoClient<S> {
-
     pub fn new(stream: S) -> Self {
         Self {
             stream,
-            read_buffer: [0u8; 2048]
+            read_buffer: [0u8; 2048],
         }
     }
 
@@ -36,8 +33,8 @@ impl<S: Read + Write> RawLocoClient<S> {
                 }
                 let buffer = &self.read_buffer[0..read_bytes];
                 Some(bincode::deserialize(buffer).unwrap())
-            },
-            Err(_) => None
+            }
+            Err(_) => None,
         }
     }
 
@@ -47,7 +44,6 @@ impl<S: Read + Write> RawLocoClient<S> {
 
         self.write(&cursor).unwrap();
     }
-
 }
 
 impl<T: Write + Read> Deref for RawLocoClient<T> {
@@ -59,7 +55,6 @@ impl<T: Write + Read> Deref for RawLocoClient<T> {
 }
 
 impl<T: Write + Read> DerefMut for RawLocoClient<T> {
-
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.stream
     }

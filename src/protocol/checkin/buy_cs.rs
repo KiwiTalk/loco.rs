@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
 use crate::protocol::structs::client::ClientInfo;
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(BuyCSRequest, BuyCSResponse)]
@@ -16,20 +16,16 @@ pub struct BuyCS;
 /// Checkin response already contains call server info
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct BuyCSRequest {
-
     #[serde(flatten)]
     pub client: ClientInfo,
 
     #[serde(rename = "countryISO")]
     pub country_iso: String,
-
 }
 
- 
 /// Answer call server information
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct BuyCSResponse {
-
     /// Call server ip
     #[serde(rename = "cshost")]
     pub cs_host: String,
@@ -53,5 +49,4 @@ pub struct BuyCSResponse {
     /// Unknown server port
     #[serde(rename = "vssport")]
     pub vss_port: i32,
-  
 }

@@ -4,13 +4,12 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoRequest, BsonData};
+use loco_derive::{BsonData, LocoRequest};
+use serde::{Deserialize, Serialize};
 
 /// Read message in chatroom
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData, LocoRequest)]
 pub struct NotiRead {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -22,7 +21,5 @@ pub struct NotiRead {
 
     /// Openchat link id
     #[serde(rename = "linkId", skip_serializing_if = "Option::is_none")]
-    pub link_id: Option<i64>
-
-
+    pub link_id: Option<i64>,
 }

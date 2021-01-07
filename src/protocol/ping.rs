@@ -4,8 +4,8 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoRequest, BsonData};
+use loco_derive::{BsonData, LocoRequest};
+use serde::{Deserialize, Serialize};
 
 /// Signal server to keep connection
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData, LocoRequest)]

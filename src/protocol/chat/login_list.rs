@@ -4,10 +4,10 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
-use crate::protocol::structs::client::ClientInfo;
 use crate::protocol::chat::l_chat_list::{LChatListRequest, LChatListResponse};
+use crate::protocol::structs::client::ClientInfo;
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(LoginListRequest, LoginListResponse)]
@@ -16,7 +16,6 @@ pub struct LoginList;
 /// Login to loco server
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct LoginListRequest {
-
     #[serde(flatten)]
     pub client: ClientInfo,
 
@@ -54,15 +53,13 @@ pub struct LoginListRequest {
 
     /// background checking(?)
     #[serde(rename = "bg")]
-    pub background: bool
-
+    pub background: bool,
 }
 
 /// Contains userId, tokens, chatroom list.
 /// The purposes of tokens, revisions are unknown yet.
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct LoginListResponse {
-
     /// Logon user id
     #[serde(rename = "userId")]
     pub user_id: i64,
@@ -110,8 +107,6 @@ pub struct LoginListResponse {
 
     /// Unknown
     pub sb: i32,
-
     // Unknown, Unknown item type
     //pub kc: Vec<()>
-
 }

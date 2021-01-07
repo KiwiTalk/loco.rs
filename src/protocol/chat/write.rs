@@ -4,13 +4,12 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoRequest, BsonData};
+use loco_derive::{BsonData, LocoRequest};
+use serde::{Deserialize, Serialize};
 
 /// Write message to chatroom
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData, LocoRequest)]
 pub struct Write {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -47,5 +46,4 @@ pub struct Write {
     /// Cannot be used to send by normal user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supplement: Option<String>,
-
 }

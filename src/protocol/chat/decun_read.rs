@@ -4,13 +4,12 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoResponse, BsonData};
+use loco_derive::{BsonData, LocoResponse};
+use serde::{Deserialize, Serialize};
 
 /// Message read by someone
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData, LocoResponse)]
 pub struct DecunRead {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -22,6 +21,5 @@ pub struct DecunRead {
     /// Read message log id
     ///
     /// Official client decrease every unread chat read count till this chat.
-    pub watermark: i64
-
+    pub watermark: i64,
 }

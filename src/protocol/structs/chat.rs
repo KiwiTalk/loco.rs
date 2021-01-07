@@ -4,13 +4,11 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Chat
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Chatlog {
-
     /// Chatlog id
     #[serde(rename = "logId")]
     pub log_id: i64,
@@ -63,7 +61,5 @@ pub struct Chatlog {
 
     /// Unknown id (Client send count??). Don't confuse with log_id.
     #[serde(rename = "msgId")]
-    pub msg_id: i32
-
-
+    pub msg_id: i32,
 }

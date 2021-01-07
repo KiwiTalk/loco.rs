@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
 use crate::protocol::structs::chat::Chatlog;
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(SyncMsgRequest, SyncMsgResponse)]
@@ -16,7 +16,6 @@ pub struct SyncMsg;
 /// Official client send this when last log id written is different with actual last log id.
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct SyncMsgRequest {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -37,7 +36,6 @@ pub struct SyncMsgRequest {
 /// Responses chatlogs between "current" and "max". Chatlog list sliced to 300 or "max" value max.
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct SyncMsgResponse {
-
     /// true if no more chat left below.
     #[serde(rename = "isOK")]
     is_ok: bool,
@@ -52,5 +50,4 @@ pub struct SyncMsgResponse {
 
     #[serde(rename = "lastTokenId")]
     last_token_id: i64,
-
 }

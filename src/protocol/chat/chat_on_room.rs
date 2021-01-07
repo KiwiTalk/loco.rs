@@ -4,10 +4,10 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use loco_derive::{LocoPacketPair, BsonData};
-use serde::{Serialize, Deserialize};
-use crate::protocol::structs::user::UserVariant;
 use crate::protocol::structs::open_link::OpenLinkUser;
+use crate::protocol::structs::user::UserVariant;
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(ChatOnRoomRequest, ChatOnRoomResponse)]
@@ -16,7 +16,6 @@ pub struct ChatOnRoom;
 /// Send before opening chatroom window. Notice server the user opening chatroom window.
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct ChatOnRoomRequest {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -26,15 +25,13 @@ pub struct ChatOnRoomRequest {
 
     /// Openlink token of chatroom if openchat.
     #[serde(rename = "opt", skip_serializing_if = "Option::is_none")]
-    pub open_token: Option<i32>
-
+    pub open_token: Option<i32>,
 }
 
 /// Contains user info, watermark list.
 /// Client can update chatroom information before opening chatroom window.
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct ChatOnRoomResponse {
-
     /// Chatroom id
     #[serde(rename = "c")]
     pub chat_id: i64,
@@ -75,5 +72,4 @@ pub struct ChatOnRoomResponse {
     /// Client open link user if openchat
     #[serde(rename = "olu", skip_serializing_if = "Option::is_none")]
     pub open_link_user: Option<OpenLinkUser>,
-
 }

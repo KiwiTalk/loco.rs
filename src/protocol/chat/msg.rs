@@ -4,14 +4,13 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoResponse, BsonData};
 use crate::protocol::structs::chat::Chatlog;
+use loco_derive::{BsonData, LocoResponse};
+use serde::{Deserialize, Serialize};
 
 /// Message sent from chatroom
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData, LocoResponse)]
 pub struct Msg {
-
     /// Sent chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -39,7 +38,5 @@ pub struct Msg {
     /// Act like no_seen.(?)
     /// Only appears on openchat
     #[serde(rename = "notiRead", skip_serializing_if = "Option::is_none")]
-    pub noti_read: Option<bool>
-
-
+    pub noti_read: Option<bool>,
 }

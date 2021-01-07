@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
 use crate::protocol::structs::chatroom::ChatroomMeta;
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(SetMetaRequest, SetMetaResponse)]
@@ -15,7 +15,6 @@ pub struct SetMeta;
 /// Set Chatroom meta
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct SetMetaRequest {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
@@ -25,19 +24,16 @@ pub struct SetMetaRequest {
     pub meta_type: i8,
 
     /// Json or String content. Different depending on type.
-    pub content: String
-
+    pub content: String,
 }
 
 /// SETMETA response
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct SetMetaResponse {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
 
     /// Updated chatroom meta item.
-    pub meta: ChatroomMeta
-
+    pub meta: ChatroomMeta,
 }

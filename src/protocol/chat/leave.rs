@@ -4,8 +4,8 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(LeaveRequest, LeaveResponse)]
@@ -14,22 +14,18 @@ pub struct Leave;
 /// Leave chatroom
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct LeaveRequest {
-
     /// Chatroom id
     #[serde(rename = "chatId")]
     pub chat_id: i64,
 
     /// Block chatroom. Cannot rejoin chatroom if true.
-    pub block: bool
-
+    pub block: bool,
 }
 
 /// Leave chatroom
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct LeaveResponse {
-
     /// Last token(?) id
     #[serde(rename = "lastTokenId")]
-    pub last_token_id: i64
-
+    pub last_token_id: i64,
 }

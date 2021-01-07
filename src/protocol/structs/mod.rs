@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-pub mod connection;
-pub mod client;
-pub mod chatroom;
-pub mod open_link;
 pub mod chat;
+pub mod chatroom;
+pub mod client;
+pub mod connection;
+pub mod open_link;
 pub mod user;

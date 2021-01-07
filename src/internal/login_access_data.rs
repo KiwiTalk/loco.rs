@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::internal::StatusCode;
+use serde::{Deserialize, Serialize};
 
 // Maps to LoginAccessDataStruct
 #[derive(Debug, Clone, Serialize, Deserialize)]

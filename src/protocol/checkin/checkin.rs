@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
 use crate::protocol::structs::client::ClientInfo;
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(CheckinRequest, CheckinResponse)]
@@ -15,7 +15,6 @@ pub struct Checkin;
 /// Request loco server host data
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct CheckinRequest {
-
     /// Client user id. Login to acquire.
     #[serde(rename = "userId")]
     pub user_id: i64,
@@ -31,14 +30,12 @@ pub struct CheckinRequest {
 
     /// Subdevice(PC, Tablet) or not
     #[serde(rename = "useSub")]
-    pub use_usb: bool
-
+    pub use_usb: bool,
 }
 
 /// Answer loco server information
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct CheckinResponse {
-
     /// Loco server ip
     pub host: String,
 
@@ -75,5 +72,4 @@ pub struct CheckinResponse {
     /// Unknown server port
     #[serde(rename = "vssport")]
     pub vss_port: i32,
-  
 }

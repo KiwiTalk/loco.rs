@@ -4,8 +4,8 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
-use loco_derive::{LocoPacketPair, BsonData};
+use loco_derive::{BsonData, LocoPacketPair};
+use serde::{Deserialize, Serialize};
 
 #[derive(LocoPacketPair)]
 #[loco_packet_pair(SetStRequest, SetStResponse)]
@@ -14,14 +14,12 @@ pub struct SetSt;
 /// Update client status
 #[derive(Debug, Clone, Serialize, Deserialize, BsonData)]
 pub struct SetStRequest {
-
-	/// Status
-	///
-	/// * Unlocked = 1
-	/// * Locked = 2
-	#[serde(rename = "st")]
-	pub status: i8
-
+    /// Status
+    ///
+    /// * Unlocked = 1
+    /// * Locked = 2
+    #[serde(rename = "st")]
+    pub status: i8,
 }
 
 /// Update client status

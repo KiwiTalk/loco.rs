@@ -4,14 +4,13 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use super::open_link::OpenUser;
 
 /// Minimal user info for chatroom display
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DisplayUserInfo {
-
     /// User id
     #[serde(rename = "userId")]
     pub user_id: i64,
@@ -26,14 +25,12 @@ pub struct DisplayUserInfo {
 
     /// Country Iso, does not present on openchat.
     #[serde(rename = "countryIso", skip_serializing_if = "Option::is_none")]
-    pub country_iso: Option<String>
-
+    pub country_iso: Option<String>,
 }
 
 /// User
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
-
     #[serde(rename = "userId")]
     pub user_id: i64,
 
@@ -65,27 +62,22 @@ pub struct User {
     #[serde(rename = "statusMessage")]
     pub status_message: String,
 
-    pub suspended: bool
-
+    pub suspended: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum UserVariant {
-
     Normal(User),
-    Open(OpenUser)
-
+    Open(OpenUser),
 }
 
 /// User types. Don't confuse with OpenMemberType.
 #[repr(i32)]
 pub enum UserType {
-    
     Unknown = -999999,
     NotFriend = -100,
     Deactivated = 9,
     Friend = 100,
-    Openchat = 1000
-
+    Openchat = 1000,
 }

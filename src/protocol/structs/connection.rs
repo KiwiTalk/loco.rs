@@ -4,12 +4,11 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// ConnectionData includes ports, connection configuartion
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConnectionData {
-    
     /// Keep interval(?) when background
     #[serde(rename = "bgKeepItv")]
     pub background_keep_interval: i32,
@@ -55,14 +54,12 @@ pub struct ConnectionData {
     pub block_send_buffer_size: i32,
 
     /// Port list
-    pub ports: Vec<i32>
-
+    pub ports: Vec<i32>,
 }
 
 /// HostData includes host list
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HostData {
-
     /// Unknown
     pub ssl: Vec<String>,
 
@@ -73,6 +70,5 @@ pub struct HostData {
     pub lsl: Vec<String>,
 
     /// Usable host list (ipv6)
-    pub lsl6: Vec<String>
-
+    pub lsl6: Vec<String>,
 }
