@@ -5,4 +5,5 @@
  */
 
 pub mod buy_cs;
+#[allow(clippy::module_inception)]
 pub mod checkin;

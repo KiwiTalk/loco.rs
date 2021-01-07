@@ -42,7 +42,7 @@ impl<S: Read + Write> RawLocoClient<S> {
         let mut cursor = Vec::with_capacity(raw_loco_packet.header.data_size as usize + 22);
         bincode::serialize_into(&mut cursor, &raw_loco_packet).unwrap();
 
-        self.write(&cursor).unwrap();
+        self.write_all(&cursor).unwrap();
     }
 }
 
