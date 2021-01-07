@@ -2,9 +2,9 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{self, Ident, DeriveInput, Error};
 use syn::parse::ParseBuffer;
 use syn::Token;
+use syn::{self, DeriveInput, Error, Ident};
 
 struct LocoPacketPair(Ident, Ident);
 
