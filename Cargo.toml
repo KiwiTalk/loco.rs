@@ -31,5 +31,5 @@ bytes = "1.0.0"
 futures = "0.3.5"
 log = "0.4.8"
 loco-derive = { path = "loco-derive" }
-webpki = "0.21"
+webpki = "0.22"
 bincode = "1.3"
