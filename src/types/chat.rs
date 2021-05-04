@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct MessagePart {
     pub chat_id: i64,
     pub link_id: i64,
@@ -14,14 +14,14 @@ pub struct MessagePart {
 pub type ChatType = i32;
 pub type ChatReferer = i32;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct ChatLog {
     pub log_id: i64,
     pub chat_id: i64,
     pub chat_type: ChatType,
     pub sender_id: i64,
     pub message: String,
-    pub sent_at: u64,
+    pub sent_at: i64,
     pub attachment: String,
     pub msg_id: i64,
     pub prev_log_id: i64,

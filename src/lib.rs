@@ -11,6 +11,8 @@ pub enum Error {
     UnsupportedMethod(String),
     BsonDeserialize(bson::de::Error),
     BsonSerialize(bson::ser::Error),
+    Openssl(openssl::error::ErrorStack),
+    InvalidCryptoKey,
 }
 
 impl From<reqwest::Error> for Error {
@@ -34,6 +36,12 @@ impl From<bson::de::Error> for Error {
 impl From<bson::ser::Error> for Error {
     fn from(error: bson::ser::Error) -> Self {
         Self::BsonSerialize(error)
+    }
+}
+
+impl From<openssl::error::ErrorStack> for Error {
+    fn from(error: openssl::error::ErrorStack) -> Self {
+        Self::Openssl(error)
     }
 }
 
