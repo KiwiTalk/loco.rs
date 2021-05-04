@@ -1,15 +1,21 @@
-pub mod channel;
-pub mod chat_room;
-pub mod open_chat;
-pub mod structs;
-pub mod user;
+use serde::{Deserialize, Serialize};
+use strum::ToString;
 
-mod os;
+use self::chat::MessagePart;
+pub mod chat;
 
-pub use channel::*;
-pub use chat_room::*;
-pub use os::*;
-pub use user::*;
+#[derive(Serialize, Deserialize, ToString)]
+pub enum Method {
+    #[strum(serialize = "MSG")]
+    Message(Message),
+}
 
-pub type LogId = u64;
-pub type Timestamp = u64;
+#[derive(Serialize, Deserialize)]
+pub struct Message {
+    #[serde(flatten)]
+    pub status: Status,
+    #[serde(flatten)]
+    pub message: MessagePart,
+}
+
+pub type Status = i32;
