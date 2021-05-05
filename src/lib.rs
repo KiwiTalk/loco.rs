@@ -3,7 +3,8 @@ mod client;
 pub mod codec;
 pub mod config;
 pub mod types;
-use client::*;
+pub use client::*;
+use types::DataStatus;
 
 #[derive(Debug)]
 pub enum Error {
@@ -16,6 +17,8 @@ pub enum Error {
     Openssl(openssl::error::ErrorStack),
     InvalidCryptoKey,
     Channel,
+    Tls(tokio_native_tls::native_tls::Error),
+    FailedRequest(DataStatus),
 }
 
 impl From<reqwest::Error> for Error {
@@ -48,14 +51,20 @@ impl From<openssl::error::ErrorStack> for Error {
     }
 }
 
-impl<T> From<tokio::sync::mpsc::error::SendError<T>> for Error {
-    fn from(_: tokio::sync::mpsc::error::SendError<T>) -> Self {
-        Self::Channel
+impl From<tokio_native_tls::native_tls::Error> for Error {
+    fn from(e: tokio_native_tls::native_tls::Error) -> Self {
+        Self::Tls(e)
     }
 }
 
 impl From<tokio::sync::oneshot::error::RecvError> for Error {
     fn from(_: tokio::sync::oneshot::error::RecvError) -> Self {
+        Self::Channel
+    }
+}
+
+impl<T> From<tokio::sync::mpsc::error::SendError<T>> for Error {
+    fn from(_: tokio::sync::mpsc::error::SendError<T>) -> Self {
         Self::Channel
     }
 }

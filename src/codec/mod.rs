@@ -15,10 +15,10 @@ use crate::{
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct LocoPacket {
-    id: u32,
-    status: u16,
-    method: String,
-    data: LocoData,
+    pub id: u32,
+    pub status: u16,
+    pub method: String,
+    pub data: LocoData,
 }
 
 impl LocoPacket {
@@ -36,12 +36,10 @@ impl LocoPacket {
         id: u32,
         status: u16,
         method: &str,
-        success: bool,
         data_status: DataStatus,
         data: impl Serialize,
     ) -> Result<Self> {
         let data = LocoData::Response(LocoResponse {
-            success,
             status: data_status,
             extra: bson::to_document(&data)?,
         });
@@ -141,13 +139,7 @@ fn parse_data(mut data: &[u8]) -> Result<LocoData> {
 
 #[cfg(test)]
 mod test {
-    use crate::{
-        api::login::LoginResponse,
-        types::{
-            chat::{LChatList, LoginList, LoginListRes},
-            DataStatusKind,
-        },
-    };
+    use crate::types::chat::{LChatList, LoginList, LoginListRes};
 
     use super::*;
 
@@ -176,8 +168,7 @@ mod test {
             0,
             0,
             "LOGINLIST",
-            true,
-            DataStatusKind::SUCCESS,
+            LocoResponse::SUCCESS,
             LoginListRes {
                 chat_list: LChatList {
                     chat_datas: vec![],

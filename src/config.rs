@@ -1,3 +1,5 @@
+use crate::codec::LocoCrypto;
+
 pub trait AgentConfig {
     fn agent(&self) -> &str;
     fn device_model(&self) -> &str;
@@ -37,7 +39,7 @@ pub trait CheckinConfig: BookingConfig + LanguageConfig {
     fn app_version(&self) -> &str;
     fn country_iso(&self) -> &str;
     fn net_type(&self) -> NetType;
-    fn loco_pem_public_key(&self) -> &str;
+    fn new_crypto(&self) -> LocoCrypto;
 }
 
 pub use CheckinConfig as SessionConfig;

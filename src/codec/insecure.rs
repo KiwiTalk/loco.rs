@@ -12,6 +12,14 @@ pub struct LocoCodec {
     current_header: Option<CommandHeader>,
 }
 
+impl LocoCodec {
+    pub fn new() -> Self {
+        Self {
+            current_header: None,
+        }
+    }
+}
+
 impl Decoder for LocoCodec {
     type Item = LocoPacket;
 

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    client::Request,
+    client::{Request, Response},
     config::{DeviceType, NetType},
     types::{channel::ChannelData, Method},
 };
@@ -69,3 +69,5 @@ pub struct LoginListRes {
     pub min_log_id: LogId,
     pub sb: i32,
 }
+
+impl Response for LoginListRes {}

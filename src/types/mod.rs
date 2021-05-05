@@ -1,15 +1,21 @@
 use serde::{Deserialize, Serialize};
 use strum::ToString;
 
-use self::chat::LoginList;
+use self::{booking::GetConf, chat::LoginList, checkin::Checkin};
+pub mod booking;
 pub mod channel;
 pub mod chat;
+pub mod checkin;
 
 #[derive(Serialize, Deserialize, ToString, Debug, PartialEq, Clone)]
 #[serde(untagged)]
 pub enum Method {
     #[strum(serialize = "LOGINLIST")]
     LoginList(LoginList),
+    #[strum(serialize = "GETCONF")]
+    GetConf(GetConf),
+    #[strum(serialize = "CHECKIN")]
+    Checkin(Checkin),
 }
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(untagged)]
@@ -20,7 +26,6 @@ pub enum LocoData {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct LocoResponse {
-    pub success: bool,
     pub status: DataStatus,
     #[serde(flatten)]
     pub extra: bson::Document,
@@ -28,9 +33,7 @@ pub struct LocoResponse {
 
 pub type DataStatus = i32;
 
-pub mod DataStatusKind {
-    use super::DataStatus;
-
+impl LocoResponse {
     pub const SUCCESS: DataStatus = 0;
     pub const INVALID_USER: DataStatus = -1;
     pub const CLIENT_ERROR: DataStatus = -200;

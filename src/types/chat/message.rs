@@ -16,6 +16,7 @@ pub struct Message {
 pub type ChatType = i32;
 pub type ChatReferer = i32;
 
+#[allow(non_snake_case)]
 pub mod ChatRefererType {
     use super::ChatReferer;
 
