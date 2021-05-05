@@ -8,7 +8,7 @@ use tokio_util::codec::{Decoder, Encoder};
 
 use crate::{codec::RsaAesCrypto, Error, Result};
 
-use super::{try_decode_command_data, try_decode_command_header, try_encode_command, LocoCommand};
+use super::{try_decode_command_data, try_decode_command_header, try_encode_command, LocoPacket};
 
 struct CryptoHeader {
     size: usize,
@@ -32,13 +32,13 @@ impl<Crypto> LocoSecureCodec<Crypto> {
     }
 }
 
-impl<Crypto> Encoder<LocoCommand> for LocoSecureCodec<Crypto>
+impl<Crypto> Encoder<LocoPacket> for LocoSecureCodec<Crypto>
 where
     Crypto: RsaAesCrypto,
 {
     type Error = Error;
 
-    fn encode(&mut self, item: LocoCommand, dst: &mut bytes::BytesMut) -> Result<()> {
+    fn encode(&mut self, item: LocoPacket, dst: &mut bytes::BytesMut) -> Result<()> {
         let iv = Crypto::random_iv();
         let encrypted = {
             let mut raw = BytesMut::new();
@@ -58,7 +58,7 @@ impl<Crypto> Decoder for LocoSecureCodec<Crypto>
 where
     Crypto: RsaAesCrypto,
 {
-    type Item = LocoCommand;
+    type Item = LocoPacket;
 
     type Error = Error;
 
@@ -167,46 +167,30 @@ mod test {
     };
     use tokio_util::codec::Framed;
 
-    use crate::{
-        codec::LocoCrypto,
-        types::{
-            chat::{ChatLog, MessagePart},
-            Message, Method,
-        },
-    };
+    use crate::{codec::LocoCrypto, types::chat::LoginList};
 
     use super::*;
 
     #[tokio::test]
     async fn secure_send_recv_should_be_redundant() {
-        let command = LocoCommand {
-            id: 0,
-            status: 0,
-            method: Method::Message(Message {
-                status: 0,
-                message: MessagePart {
-                    chat_id: 0,
-                    link_id: 0,
-                    log_id: 0,
-                    chat_log: ChatLog {
-                        log_id: 0,
-                        chat_id: 0,
-                        chat_type: 0,
-                        sender_id: 0,
-                        message: "".into(),
-                        sent_at: 0,
-                        attachment: "".into(),
-                        msg_id: 0,
-                        prev_log_id: 0,
-                        supplement: "".into(),
-                        referer: 0,
-                    },
-                    sent_without_seen: false,
-                    sender_nickname: None,
-                    notification_read: None,
-                },
-            }),
-        };
+        let command = LocoPacket::from_method(
+            0,
+            0,
+            LoginList {
+                app_version: "".into(),
+                prt_version: "".into(),
+                os: "".into(),
+                language: "".into(),
+                device_uuid: "".into(),
+                oauth_token: "".into(),
+                device_type: 0,
+                net_type: 0,
+                mccmnc: "".into(),
+                revision: 0,
+                rp: None,
+                bg: false,
+            },
+        );
 
         let key_server = Rsa::generate(2048).unwrap();
         let key_client = key_server.clone();

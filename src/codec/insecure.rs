@@ -5,7 +5,7 @@ use crate::{Error, Result};
 
 use super::{
     try_decode_command_data, try_decode_command_header, try_encode_command, CommandHeader,
-    LocoCommand,
+    LocoPacket,
 };
 
 pub struct LocoCodec {
@@ -13,7 +13,7 @@ pub struct LocoCodec {
 }
 
 impl Decoder for LocoCodec {
-    type Item = LocoCommand;
+    type Item = LocoPacket;
 
     type Error = Error;
 
@@ -37,10 +37,10 @@ impl Decoder for LocoCodec {
     }
 }
 
-impl Encoder<LocoCommand> for LocoCodec {
+impl Encoder<LocoPacket> for LocoCodec {
     type Error = Error;
 
-    fn encode(&mut self, item: LocoCommand, dst: &mut BytesMut) -> Result<()> {
+    fn encode(&mut self, item: LocoPacket, dst: &mut BytesMut) -> Result<()> {
         try_encode_command(dst, item)
     }
 }

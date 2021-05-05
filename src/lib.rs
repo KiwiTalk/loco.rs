@@ -1,7 +1,9 @@
 pub mod api;
+mod client;
 pub mod codec;
 pub mod config;
 pub mod types;
+use client::*;
 
 #[derive(Debug)]
 pub enum Error {
@@ -13,6 +15,7 @@ pub enum Error {
     BsonSerialize(bson::ser::Error),
     Openssl(openssl::error::ErrorStack),
     InvalidCryptoKey,
+    Channel,
 }
 
 impl From<reqwest::Error> for Error {
@@ -42,6 +45,18 @@ impl From<bson::ser::Error> for Error {
 impl From<openssl::error::ErrorStack> for Error {
     fn from(error: openssl::error::ErrorStack) -> Self {
         Self::Openssl(error)
+    }
+}
+
+impl<T> From<tokio::sync::mpsc::error::SendError<T>> for Error {
+    fn from(_: tokio::sync::mpsc::error::SendError<T>) -> Self {
+        Self::Channel
+    }
+}
+
+impl From<tokio::sync::oneshot::error::RecvError> for Error {
+    fn from(_: tokio::sync::oneshot::error::RecvError) -> Self {
+        Self::Channel
     }
 }
 

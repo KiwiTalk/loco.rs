@@ -1,7 +1,13 @@
-pub trait WebApiConfig {
+pub trait AgentConfig {
     fn agent(&self) -> &str;
     fn device_model(&self) -> &str;
+}
+
+pub trait LanguageConfig {
     fn language(&self) -> &str;
+}
+
+pub trait WebApiConfig: AgentConfig + LanguageConfig {
     fn os_version(&self) -> &str;
     fn version(&self) -> &str;
 
@@ -16,6 +22,33 @@ pub trait XvcProvider {
         user_agent: impl AsRef<str>,
         email: impl AsRef<str>,
     ) -> String;
+}
+
+pub trait BookingConfig: AgentConfig {
+    fn booking_host(&self) -> (&str, u16);
+    fn mccmnc(&self) -> &str;
+}
+
+pub type NetType = i32;
+
+pub trait CheckinConfig: BookingConfig + LanguageConfig {
+    fn checkin_fallback_host(&self) -> (&str, u16);
+    fn sub_device(&self) -> bool;
+    fn app_version(&self) -> &str;
+    fn country_iso(&self) -> &str;
+    fn net_type(&self) -> NetType;
+    fn loco_pem_public_key(&self) -> &str;
+}
+
+pub use CheckinConfig as SessionConfig;
+
+pub type DeviceType = i32;
+pub trait ClientConfig: SessionConfig + WebApiConfig {
+    fn device_type(&self) -> DeviceType;
+}
+
+pub trait OAuthLoginConfig: WebApiConfig {
+    fn login_token_seeds(&self) -> (&str, &str);
 }
 
 pub(crate) trait WebApiRequest {
