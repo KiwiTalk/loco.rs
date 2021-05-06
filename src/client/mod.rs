@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use futures::{
     channel::{mpsc, oneshot},
-    future::Either,
+    future::{join, Either},
     SinkExt, Stream, StreamExt,
 };
 use serde::de::DeserializeOwned;
@@ -80,13 +80,17 @@ impl<Config> LocoEventLoop<Config> {
         self.packet_tx = Some(packet_tx);
         packet_rx
     }
+
+    pub fn sender(&self) -> &Sender {
+        &self.sender
+    }
 }
 
 impl<Config> LocoEventLoop<Config>
 where
     Config: ClientConfig + Send + 'static,
 {
-    pub async fn spawn(self) -> Result<Sender> {
+    pub async fn spawn(self) -> Result<()> {
         let checkin = get_checkin(&self.config).await?;
         let socket = TcpStream::connect((checkin.host.as_str(), checkin.port as u16)).await?;
         let crypto = self.config.new_crypto();
@@ -109,41 +113,41 @@ where
                     Either::Left(Ok(mut packet)) => {
                         if let LocoData::Response(response) = packet.data {
                             if let Some(Some(notifier)) = notifier_registry.remove(&packet.id) {
-                                notifier.send(response).unwrap();
+                                notifier
+                                    .send(response)
+                                    .expect("Response notification failed");
                                 continue;
                             }
                             packet.data = LocoData::Response(response);
                         }
                         if let Some(tx) = &mut packet_tx {
-                            tx.send(packet).await.unwrap();
+                            tx.send(packet).await?;
                         }
                     }
-                    Either::Left(Err(_)) => break,
+                    Either::Left(Err(e)) => return Err(e),
                     Either::Right((id, notifier)) => {
                         notifier_registry.insert(id, notifier);
                     }
                 }
             }
-        };
 
-        tokio::spawn(read_task);
+            Ok(())
+        };
 
         let mut receiver = self.receiver;
         let write_task = async move {
             let mut packet_id = 0;
             while let Some((method, maybe_notifier)) = receiver.next().await {
                 let packet = LocoPacket::from_method(packet_id, 0, method);
-                let try_write = writer.send(packet).await;
-                let try_read = req_tx.send((packet_id, maybe_notifier)).await;
-                if try_write.is_err() || try_read.is_err() {
-                    break;
-                }
+                writer.send(packet).await?;
+                req_tx.send((packet_id, maybe_notifier)).await?;
                 packet_id += 1;
             }
+
+            Ok(())
         };
 
-        tokio::spawn(write_task);
-
-        Ok(self.sender)
+        let (try_read, try_write) = join(read_task, write_task).await;
+        try_read.and(try_write)
     }
 }
