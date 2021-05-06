@@ -8,15 +8,14 @@ use super::{
     LocoPacket,
 };
 
+#[derive(Default)]
 pub struct LocoCodec {
     current_header: Option<CommandHeader>,
 }
 
 impl LocoCodec {
     pub fn new() -> Self {
-        Self {
-            current_header: None,
-        }
+        Default::default()
     }
 }
 

@@ -57,14 +57,14 @@ impl From<tokio_native_tls::native_tls::Error> for Error {
     }
 }
 
-impl From<tokio::sync::oneshot::error::RecvError> for Error {
-    fn from(_: tokio::sync::oneshot::error::RecvError) -> Self {
+impl From<futures::channel::oneshot::Canceled> for Error {
+    fn from(_: futures::channel::oneshot::Canceled) -> Self {
         Self::Channel
     }
 }
 
-impl<T> From<tokio::sync::mpsc::error::SendError<T>> for Error {
-    fn from(_: tokio::sync::mpsc::error::SendError<T>) -> Self {
+impl From<futures::channel::mpsc::SendError> for Error {
+    fn from(_: futures::channel::mpsc::SendError) -> Self {
         Self::Channel
     }
 }

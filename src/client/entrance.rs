@@ -50,7 +50,7 @@ pub async fn get_checkin(config: &impl CheckinConfig) -> Result<CheckinRes> {
     };
     let mut stream = match try_checkin {
         Ok(stream) => stream,
-        Err(e) => {
+        Err(_) => {
             let (host, port) = config.checkin_fallback_host();
             let stream = TcpStream::connect((host, port)).await?;
             LocoSecureCodec::new(crypto).framed(stream)
