@@ -61,7 +61,7 @@ pub struct LocoEventLoop<Config> {
     config: Config,
     sender: Sender,
     receiver: mpsc::Receiver<(Method, Option<oneshot::Sender<LocoResponse>>)>,
-    packet_tx: Option<mpsc::Sender<LocoPacket>>,
+    packet_tx: Option<mpsc::Sender<(Sender, LocoPacket)>>,
 }
 
 impl<Config> LocoEventLoop<Config> {
@@ -75,7 +75,7 @@ impl<Config> LocoEventLoop<Config> {
         }
     }
 
-    pub fn packets(&mut self) -> impl Stream<Item = LocoPacket> {
+    pub fn packets(&mut self) -> impl Stream<Item = (Sender, LocoPacket)> {
         let (packet_tx, packet_rx) = mpsc::channel(16);
         self.packet_tx = Some(packet_tx);
         packet_rx
@@ -100,6 +100,7 @@ where
         let (mut req_tx, req_rx) = mpsc::channel(16);
 
         let mut packet_tx = self.packet_tx;
+        let sender = self.sender;
         let read_task = async move {
             let mut notifier_registry =
                 HashMap::<u32, Option<oneshot::Sender<LocoResponse>>>::new();
@@ -121,7 +122,7 @@ where
                             packet.data = LocoData::Response(response);
                         }
                         if let Some(tx) = &mut packet_tx {
-                            tx.send(packet).await?;
+                            tx.send((sender.clone(), packet)).await?;
                         }
                     }
                     Either::Left(Err(e)) => return Err(e),
