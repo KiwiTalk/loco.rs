@@ -4,7 +4,7 @@ use tokio_native_tls::TlsStream;
 use tokio_util::codec::Decoder;
 
 use crate::{
-    codec::{LocoCodec, LocoPacket, LocoSecureCodec},
+    codec::{send_handshake, EncryptType, KeyEncryptType, LocoCodec, LocoPacket, LocoSecureCodec},
     config::{BookingConfig, CheckinConfig},
     types::{
         booking::{GetConf, GetConfRes},
@@ -39,10 +39,18 @@ pub async fn get_config(config: &impl BookingConfig) -> Result<GetConfRes> {
 pub async fn get_checkin(config: &impl CheckinConfig) -> Result<CheckinRes> {
     let crypto = config.new_crypto();
     let try_checkin = match get_config(config).await {
-        Ok(config) => {
-            let host = config.ticket_hosts.lsl[0].as_str();
-            let port = config.config_wifi.ports[0] as u16;
-            let stream = TcpStream::connect((host, port)).await?;
+        Ok(response) => {
+            let host = response.ticket_hosts.lsl[0].as_str();
+            let port = response.config_wifi.ports[0] as u16;
+            let mut stream = TcpStream::connect((host, port)).await?;
+            send_handshake(
+                &mut stream,
+                &crypto,
+                KeyEncryptType::RsaOaepSha1Mgf1Sha1,
+                EncryptType::AesCfb128,
+                &config.public_key(),
+            )
+            .await?;
             Ok(LocoSecureCodec::new(crypto.clone()).framed(stream))
         }
         Err(e @ Error::FailedRequest(_)) => return Err(e),
@@ -52,7 +60,15 @@ pub async fn get_checkin(config: &impl CheckinConfig) -> Result<CheckinRes> {
         Ok(stream) => stream,
         Err(_) => {
             let (host, port) = config.checkin_fallback_host();
-            let stream = TcpStream::connect((host, port)).await?;
+            let mut stream = TcpStream::connect((host, port)).await?;
+            send_handshake(
+                &mut stream,
+                &crypto,
+                KeyEncryptType::RsaOaepSha1Mgf1Sha1,
+                EncryptType::AesCfb128,
+                &config.public_key(),
+            )
+            .await?;
             LocoSecureCodec::new(crypto).framed(stream)
         }
     };

@@ -40,8 +40,10 @@ pub trait CheckinConfig: BookingConfig + LanguageConfig {
     fn country_iso(&self) -> &str;
     fn net_type(&self) -> NetType;
     fn new_crypto(&self) -> LocoCrypto;
+    fn public_key(&self) -> &Rsa<Public>;
 }
 
+use openssl::{pkey::Public, rsa::Rsa};
 pub use CheckinConfig as SessionConfig;
 
 pub type DeviceType = i32;

@@ -10,7 +10,7 @@ use tokio::net::TcpStream;
 use tokio_util::codec::{FramedRead, FramedWrite};
 
 use crate::{
-    codec::{LocoPacket, LocoSecureCodec},
+    codec::{send_handshake, EncryptType, KeyEncryptType, LocoPacket, LocoSecureCodec},
     config::ClientConfig,
     types::{DataStatus, LocoData, LocoResponse, Method},
     Error, Result,
@@ -92,8 +92,16 @@ where
 {
     pub async fn spawn(self) -> Result<()> {
         let checkin = get_checkin(&self.config).await?;
-        let socket = TcpStream::connect((checkin.host.as_str(), checkin.port as u16)).await?;
+        let mut socket = TcpStream::connect((checkin.host.as_str(), checkin.port as u16)).await?;
         let crypto = self.config.new_crypto();
+        send_handshake(
+            &mut socket,
+            &crypto,
+            KeyEncryptType::RsaOaepSha1Mgf1Sha1,
+            EncryptType::AesCfb128,
+            &self.config.public_key(),
+        )
+        .await?;
         let (rx, tx) = socket.into_split();
         let reader = FramedRead::new(rx, LocoSecureCodec::new(crypto.clone()));
         let mut writer = FramedWrite::new(tx, LocoSecureCodec::new(crypto));
