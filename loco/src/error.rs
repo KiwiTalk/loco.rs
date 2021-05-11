@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum Error {
     Io(std::io::Error),
     Openssl(openssl::error::ErrorStack),

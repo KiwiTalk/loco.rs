@@ -1,15 +1,19 @@
 use bytes::{Buf, BufMut, BytesMut};
-use futures::{AsyncReadExt, AsyncWriteExt};
 use openssl::{
     pkey::{HasPrivate, HasPublic},
     rsa::Rsa,
 };
-use tokio_util::codec::{Decoder, Encoder};
+use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
+use tokio_util::codec::{Decoder, Encoder, Framed};
 
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-use crate::{crypto::RsaAesCrypto, Error, Result};
+use crate::{
+    crypto::RsaAesCrypto,
+    types::{request::LocoRequest, response::LocoResponse},
+    Error, Result,
+};
 
 use super::{LocoDecoder, LocoEncoder, LocoPacket};
 
@@ -76,6 +80,16 @@ pub struct LocoSecureDecoder<Crypto, Payload> {
     inner: LocoDecoder<Payload>,
 }
 
+impl<Crypto, Payload> LocoSecureDecoder<Crypto, Payload> {
+    pub fn new(crypto_provider: Crypto) -> Self {
+        Self {
+            crypto_provider,
+            prev_crypto_header: None,
+            inner: LocoDecoder::new(),
+        }
+    }
+}
+
 impl<Crypto, Payload> Decoder for LocoSecureDecoder<Crypto, Payload>
 where
     Crypto: RsaAesCrypto,
@@ -115,6 +129,109 @@ where
     }
 }
 
+pub struct LocoSecureClientCodec<Crypto> {
+    encoder: LocoSecureEncoder<Crypto>,
+    decoder: LocoSecureDecoder<Crypto, LocoResponse>,
+}
+
+impl<Crypto: RsaAesCrypto> Encoder<LocoPacket<LocoRequest>> for LocoSecureClientCodec<Crypto> {
+    type Error = Error;
+
+    fn encode(&mut self, item: LocoPacket<LocoRequest>, dst: &mut BytesMut) -> Result<()> {
+        self.encoder.encode(item, dst)
+    }
+}
+
+impl<Crypto: RsaAesCrypto> Decoder for LocoSecureClientCodec<Crypto> {
+    type Item = LocoPacket<LocoResponse>;
+
+    type Error = Error;
+
+    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>> {
+        self.decoder.decode(src)
+    }
+}
+
+pub struct LocoSecureServerCodec<Crypto> {
+    encoder: LocoSecureEncoder<Crypto>,
+    decoder: LocoSecureDecoder<Crypto, LocoRequest>,
+    pub key_encrypt_type: KeyEncryptType,
+    pub encrypt_type: EncryptType,
+}
+
+impl<Crypto: RsaAesCrypto> Encoder<LocoPacket<LocoResponse>> for LocoSecureServerCodec<Crypto> {
+    type Error = Error;
+
+    fn encode(&mut self, item: LocoPacket<LocoResponse>, dst: &mut BytesMut) -> Result<()> {
+        self.encoder.encode(item, dst)
+    }
+}
+
+impl<Crypto: RsaAesCrypto> Decoder for LocoSecureServerCodec<Crypto> {
+    type Item = LocoPacket<LocoRequest>;
+
+    type Error = Error;
+
+    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>> {
+        self.decoder.decode(src)
+    }
+}
+
+impl<Crypto> LocoSecureClientCodec<Crypto> {
+    pub fn new(crypto: Crypto) -> Self
+    where
+        Crypto: Clone,
+    {
+        Self {
+            encoder: LocoSecureEncoder::new(crypto.clone()),
+            decoder: LocoSecureDecoder::new(crypto),
+        }
+    }
+
+    pub async fn wrap<Stream>(
+        self,
+        mut stream: Stream,
+        key_encrypt_type: KeyEncryptType,
+        encrypt_type: EncryptType,
+        key: &Rsa<impl HasPublic>,
+    ) -> Result<Framed<Stream, Self>>
+    where
+        Crypto: RsaAesCrypto,
+        Stream: AsyncRead + AsyncWrite + Unpin,
+    {
+        send_handshake(
+            &mut stream,
+            &self.encoder.crypto_provider,
+            key_encrypt_type,
+            encrypt_type,
+            key,
+        )
+        .await?;
+        Ok(Framed::new(stream, self))
+    }
+}
+
+impl<Crypto> LocoSecureServerCodec<Crypto> {
+    pub async fn framed<Stream>(
+        mut stream: Stream,
+        mut crypto: Crypto,
+        key: &Rsa<impl HasPrivate>,
+    ) -> Result<Framed<Stream, Self>>
+    where
+        Crypto: RsaAesCrypto + Clone,
+        Stream: AsyncRead + AsyncWrite + Unpin,
+    {
+        let handshake = recv_handshake(&mut stream, &mut crypto, key).await?;
+        Ok(Self {
+            encoder: LocoSecureEncoder::new(crypto.clone()),
+            decoder: LocoSecureDecoder::new(crypto),
+            key_encrypt_type: handshake.key_encrypt_type,
+            encrypt_type: handshake.encrypt_type,
+        }
+        .framed(stream))
+    }
+}
+
 #[derive(Serialize_repr, Deserialize_repr, Debug, PartialEq, Clone)]
 #[repr(u32)]
 pub enum EncryptType {
@@ -142,7 +259,7 @@ struct RawLocoHandshake {
 const HANDSHAKE_HEADER_LEN: usize = 12;
 
 pub async fn send_handshake(
-    socket: &mut (impl AsyncWriteExt + Unpin),
+    socket: &mut (impl AsyncWrite + Unpin),
     crypto: &impl RsaAesCrypto,
     key_encrypt_type: KeyEncryptType,
     encrypt_type: EncryptType,
@@ -163,7 +280,7 @@ pub async fn send_handshake(
 }
 
 pub async fn recv_handshake(
-    socket: &mut (impl AsyncReadExt + Unpin),
+    socket: &mut (impl AsyncRead + Unpin),
     crypto: &mut impl RsaAesCrypto,
     key: &Rsa<impl HasPrivate>,
 ) -> Result<LocoHandshake> {

@@ -33,7 +33,7 @@ pub trait BookingConfig: AgentConfig {
 
 pub trait CheckinConfig: BookingConfig + LanguageConfig {
     fn checkin_fallback_host(&self) -> (&str, u16);
-    fn sub_device(&self) -> bool;
+    fn use_sub_device(&self) -> bool;
     fn app_version(&self) -> &str;
     fn country_iso(&self) -> &str;
     fn net_type(&self) -> NetType;

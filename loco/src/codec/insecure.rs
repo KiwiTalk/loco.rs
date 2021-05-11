@@ -1,13 +1,17 @@
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 
 use bytes::{Buf, BufMut, BytesMut};
 use serde::{de::DeserializeOwned, Serialize};
 use tokio_util::codec::{Decoder, Encoder};
 
-use crate::Error;
+use crate::{
+    types::{request::LocoRequest, response::LocoResponse},
+    Error,
+};
 
 use super::{LocoPacket, RawLocoHeader, RawLocoPacket};
 
+#[derive(Default)]
 pub struct LocoEncoder;
 
 impl<Payload: Serialize> Encoder<LocoPacket<Payload>> for LocoEncoder {
@@ -20,10 +24,24 @@ impl<Payload: Serialize> Encoder<LocoPacket<Payload>> for LocoEncoder {
     }
 }
 
-#[derive(Default)]
 pub struct LocoDecoder<Payload> {
     prev_header: Option<RawLocoHeader>,
     _phantom: std::marker::PhantomData<Payload>,
+}
+
+impl<Payload> Default for LocoDecoder<Payload> {
+    fn default() -> Self {
+        Self {
+            prev_header: None,
+            _phantom: Default::default(),
+        }
+    }
+}
+
+impl<Payload> LocoDecoder<Payload> {
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 
 const HEADER_LEN: usize = 22;
@@ -49,14 +67,66 @@ impl<Payload: DeserializeOwned> Decoder for LocoDecoder<Payload> {
             self.prev_header = Some(header);
             Ok(None)
         } else if header.data_type == 0 || header.data_type == 8 {
-            let raw_packet = RawLocoPacket {
-                header,
-                data: src[..data_size].to_vec(),
-            };
-            Ok(Some(raw_packet.try_into()?))
+            Ok(Some(LocoPacket::from_raw(header, &src[..data_size])?))
         } else {
             src.advance(data_size);
             Err(Error::UnsupportedPacketType)
         }
+    }
+}
+
+#[derive(Default)]
+pub struct LocoClientCodec {
+    encoder: LocoEncoder,
+    decoder: LocoDecoder<LocoResponse>,
+}
+
+impl Encoder<LocoPacket<LocoRequest>> for LocoClientCodec {
+    type Error = Error;
+
+    fn encode(
+        &mut self,
+        item: LocoPacket<LocoRequest>,
+        dst: &mut BytesMut,
+    ) -> Result<(), Self::Error> {
+        self.encoder.encode(item, dst)
+    }
+}
+
+impl Decoder for LocoClientCodec {
+    type Item = LocoPacket<LocoResponse>;
+
+    type Error = Error;
+
+    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
+        self.decoder.decode(src)
+    }
+}
+
+#[derive(Default)]
+pub struct LocoServerCodec {
+    encoder: LocoEncoder,
+    decoder: LocoDecoder<LocoRequest>,
+}
+
+impl Encoder<LocoPacket<LocoResponse>> for LocoServerCodec {
+    type Error = Error;
+
+    fn encode(
+        &mut self,
+        item: LocoPacket<LocoResponse>,
+        dst: &mut BytesMut,
+    ) -> Result<(), Self::Error> {
+        self.encoder.encode(item, dst)
+    }
+}
+
+impl Decoder for LocoServerCodec {
+    type Item = LocoPacket<LocoRequest>;
+
+    type Error = Error;
+
+    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
+        self.decoder.decode(src)
     }
 }

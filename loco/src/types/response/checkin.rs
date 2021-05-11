@@ -4,40 +4,40 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Checkin {
     /// IPv4 loco host.
-    host: String,
+    pub host: String,
 
     /// IPv6 loco host.
     #[serde(rename = "host6")]
-    host_ipv6: String,
+    pub host_ipv6: String,
 
     /// Loco port.
-    port: i32,
+    pub port: i32,
 
     /// Cache expire time.
     #[serde(rename = "cacheExpire")]
-    cache_expire: i32,
+    pub cache_expire: i32,
 
     /// IPv4 call server host.
     #[serde(rename = "cshost")]
-    call_server_host: String,
+    pub call_server_host: String,
 
     /// Call server port.
     #[serde(rename = "csport")]
-    call_server_port: i32,
+    pub call_server_port: i32,
 
     /// IPv6 call server host.
     #[serde(rename = "cshost6")]
-    call_server_host_ipv6: String,
+    pub call_server_host_ipv6: String,
 
     /// IPv4 video server host.
     #[serde(rename = "vsshost")]
-    video_server_host: String,
+    pub video_server_host: String,
 
     /// Video server port.
     #[serde(rename = "vssport")]
-    video_server_port: i32,
+    pub video_server_port: i32,
 
     /// IPv6 video server host.
     #[serde(rename = "vsshost6")]
-    video_server_host_ipv6: String,
+    pub video_server_host_ipv6: String,
 }

@@ -25,6 +25,7 @@ reqwest = { version = "0.11.3", features = ["json"] }
 serde = { version = "1.0.125", features = ["derive"] }
 serde_repr = "0.1.6"
 strum = { version = "0.20.0", features = ["derive"] }
+tokio = { version = "1.5.0", features = ["io-util"], default-features = false }
 tokio-util = { version = "0.6.6", features = ["codec"] }
 
 [dev-dependencies]

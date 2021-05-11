@@ -65,16 +65,14 @@ impl<Payload: Serialize> TryFrom<LocoPacket<Payload>> for RawLocoPacket {
     }
 }
 
-impl<Payload: DeserializeOwned> TryFrom<RawLocoPacket> for LocoPacket<Payload> {
-    type Error = Error;
-
-    fn try_from(value: RawLocoPacket) -> Result<Self, Self::Error> {
-        let method_slice = value.header.method.split(|byte| *byte == 0).next().unwrap();
+impl<Payload: DeserializeOwned> LocoPacket<Payload> {
+    fn from_raw(header: RawLocoHeader, mut data: &[u8]) -> Result<Self, Error> {
+        let method_slice = header.method.split(|byte| *byte == 0).next().unwrap();
         let method = String::from_utf8(method_slice.into()).unwrap();
-        let document = bson::Document::from_reader(&mut &value.data[..])?;
+        let document = bson::Document::from_reader(&mut data)?;
         let payload = bson::from_document(document)?;
         Ok(Self {
-            id: value.header.id,
+            id: header.id,
             method,
             payload,
         })
