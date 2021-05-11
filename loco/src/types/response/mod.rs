@@ -1,37 +1,46 @@
+mod booking;
+mod checkin;
+
 use serde::{Deserialize, Serialize};
 use strum::ToString;
 
-use self::{booking::GetConf, chat::LoginList, checkin::Checkin};
-pub mod booking;
-pub mod channel;
-pub mod chat;
-pub mod checkin;
+pub use booking::*;
+pub use checkin::*;
+
+pub type DataStatus = i32;
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub enum LocoResponse {
+    Fail {
+        status: DataStatus,
+    },
+    Success {
+        status: DataStatus,
+        #[serde(flatten)]
+        kind: Box<ResponseKind>,
+    },
+}
 
 #[derive(Serialize, Deserialize, ToString, Debug, PartialEq, Clone)]
 #[serde(untagged)]
-pub enum Method {
-    #[strum(serialize = "LOGINLIST")]
-    LoginList(LoginList),
+pub enum ResponseKind {
     #[strum(serialize = "GETCONF")]
     GetConf(GetConf),
     #[strum(serialize = "CHECKIN")]
     Checkin(Checkin),
 }
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
-#[serde(untagged)]
-pub enum LocoData {
-    Request(Method),
-    Response(LocoResponse),
+
+impl From<GetConf> for ResponseKind {
+    fn from(get_conf: GetConf) -> Self {
+        Self::GetConf(get_conf)
+    }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
-pub struct LocoResponse {
-    pub status: DataStatus,
-    #[serde(flatten)]
-    pub extra: bson::Document,
+impl From<Checkin> for ResponseKind {
+    fn from(checkin: Checkin) -> Self {
+        Self::Checkin(checkin)
+    }
 }
-
-pub type DataStatus = i32;
 
 impl LocoResponse {
     pub const SUCCESS: DataStatus = 0;

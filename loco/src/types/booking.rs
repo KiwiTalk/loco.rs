@@ -1,89 +1,56 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    client::{Request, Response},
-    config::BookingConfig,
-};
-
-use super::Method;
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
-pub struct GetConf {
-    #[serde(rename = "MCCMNC")]
-    pub mccmnc: String,
-    pub model: String,
-    pub os: String,
-}
-
-impl GetConf {
-    pub fn from_config(config: &impl BookingConfig) -> Self {
-        Self {
-            mccmnc: config.mccmnc().into(),
-            model: config.device_model().into(),
-            os: config.agent().into(),
-        }
-    }
-}
-
-impl From<GetConf> for Method {
-    fn from(item: GetConf) -> Self {
-        Method::GetConf(item)
-    }
-}
-
-impl Request for GetConf {
-    type Response = GetConfRes;
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
-pub struct GetConfRes {
-    #[serde(rename = "revision")]
-    pub last_revision: i32,
-
-    #[serde(rename = "3g")]
-    pub config_3g: NetworkConfig,
-    #[serde(rename = "wifi")]
-    pub config_wifi: NetworkConfig,
-    #[serde(rename = "ticket")]
-    pub ticket_hosts: TicketHosts,
-    #[serde(rename = "profile")]
-    pub video_profile: VideoProfile,
-    #[serde(rename = "etc")]
-    pub extra: ExtraConfig,
-    pub trailer: Trailer,
-    #[serde(rename = "trailer.h")]
-    pub trailer_hd: TrailerHD,
-}
-
-impl Response for GetConfRes {}
-
+/// Network related settings.
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct NetworkConfig {
+    /// Background keep interval.
     #[serde(rename = "bgKeepItv")]
     pub background_keep_interval: i32,
+
+    /// Background reconnect interval.
     #[serde(rename = "bgReconnItv")]
     pub background_reconnect_interval: i32,
+
+    /// Background ping interval.
     #[serde(rename = "bgPingItv")]
     pub background_ping_interval: i32,
+
+    /// Foreground keep interval.
     #[serde(rename = "fgPingItv")]
     pub foreground_ping_interval: i32,
+
+    /// Request timeout.
     #[serde(rename = "reqTimeout")]
     pub request_timeout: i32,
+
+    /// Encrypt type. Used in secure layer.
     #[serde(rename = "encType")]
     pub encrypt_type: i32,
+
+    /// Connection timeout.
     #[serde(rename = "connTimeout")]
     pub connection_timeout: i32,
+
+    /// Packet header receive timeout.
     #[serde(rename = "recvHeaderTimeout")]
     pub header_receive_timeout: i32,
+
     #[serde(rename = "inSegTimeout")]
     pub in_segment_timeout: i32,
+
     #[serde(rename = "outSegTimeout")]
     pub out_segment_timeout: i32,
+
+    /// Max tcp packet size. (uncertain)
     #[serde(rename = "blockSendBufSize")]
     pub block_send_buffer_size: i32,
+
+    /// Usable port list.
     pub ports: Vec<i32>,
 }
 
+/// Checkin server host list.
+/// Only lsl and lsl6 work.
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct TicketHosts {
     pub ssl: Vec<String>,
@@ -92,6 +59,7 @@ pub struct TicketHosts {
     pub lsl6: Vec<String>,
 }
 
+/// Video profile information.
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct VideoProfile {
     #[serde(rename = "vBitrate")]
@@ -100,6 +68,7 @@ pub struct VideoProfile {
     pub resolution: i32,
 }
 
+/// Miscellaneous settings.
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ExtraConfig {
@@ -108,6 +77,7 @@ pub struct ExtraConfig {
     pub traceroute_host_6: Vec<String>,
 }
 
+/// Video / Audio / File related config.
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Trailer {
     #[serde(rename = "tokenExpireTime")]
@@ -148,6 +118,7 @@ pub struct Trailer {
     pub audio_frequency: i32,
 }
 
+/// HD video / audio settings.
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct TrailerHD {
     #[serde(rename = "vResolution")]

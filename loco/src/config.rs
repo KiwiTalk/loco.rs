@@ -1,4 +1,4 @@
-use crate::codec::LocoCrypto;
+use crate::{crypto::LocoCrypto, types::NetType};
 
 pub trait AgentConfig {
     fn agent(&self) -> &str;
@@ -30,8 +30,6 @@ pub trait BookingConfig: AgentConfig {
     fn booking_host(&self) -> (&str, u16);
     fn mccmnc(&self) -> &str;
 }
-
-pub type NetType = i32;
 
 pub trait CheckinConfig: BookingConfig + LanguageConfig {
     fn checkin_fallback_host(&self) -> (&str, u16);
