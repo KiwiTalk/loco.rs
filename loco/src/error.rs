@@ -2,8 +2,8 @@ pub enum Error {
     Io(std::io::Error),
     Openssl(openssl::error::ErrorStack),
     Reqwest(reqwest::Error),
-    BsonSerialize(bson::ser::Error),
-    BsonDeserialize(bson::de::Error),
+    BsonSerialize(Box<bson::ser::Error>),
+    BsonDeserialize(Box<bson::de::Error>),
     Bincode(bincode::Error),
     InvalidCryptoKey,
     UnsupportedPacketType,
@@ -29,13 +29,13 @@ impl From<reqwest::Error> for Error {
 
 impl From<bson::ser::Error> for Error {
     fn from(e: bson::ser::Error) -> Self {
-        Self::BsonSerialize(e)
+        Self::BsonSerialize(Box::new(e))
     }
 }
 
 impl From<bson::de::Error> for Error {
     fn from(e: bson::de::Error) -> Self {
-        Self::BsonDeserialize(e)
+        Self::BsonDeserialize(Box::new(e))
     }
 }
 
