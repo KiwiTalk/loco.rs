@@ -17,7 +17,7 @@ license = "Apache-2.0"
 
 [dependencies]
 bson = "2.0"
-hex-literal = "0.3.0"
+hex-literal = "0.3.4"
 reqwest = { version = "0.11", features = ["blocking"] }
 sha2 = "0.10.3"
 hex = "0.4.2"
