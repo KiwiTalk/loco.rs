@@ -22,7 +22,7 @@ jobs:
           override: true
 
       - name: Cache Rust modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
@@ -53,7 +53,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Rust modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
