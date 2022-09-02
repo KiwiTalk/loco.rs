@@ -29,7 +29,7 @@ tokio = { version = "1.0.1", features = ["macros"] }
 tokio-util = { version = "0.7.0", features = ["codec"], default-features = false }
 bytes = "1.2.1"
 futures = "0.3.24"
-log = "0.4.8"
+log = "0.4.17"
 loco-derive = { path = "loco-derive" }
 webpki = "0.22"
 bincode = "1.3"
